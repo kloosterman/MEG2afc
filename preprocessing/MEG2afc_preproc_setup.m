@@ -2,7 +2,7 @@ function MEG2afc_preproc_setup()
 % run from runMIBmeg_analysis
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/'; %yesno or 2afc
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';

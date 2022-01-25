@@ -18,7 +18,7 @@ addpath(genpath_exclude(fullfile(basepath, 'MEG2afc'), {'\.git'} ))
 % addpath(fullfile(basepath, 'tools', 'fieldtrip-20170611')) %inc JJ edit ft_artifact_zvalue
 addpath(fullfile(basepath, 'fieldtrip')) % cloned on 13 09 19
 addpath(fullfile(basepath, 'zapline-plus')) 
-addpath(fullfile(basepath, 'qsub_tardis')) %inc JJ edit ft_artifact_zvalue
+addpath(fullfile(basepath, 'qsub-tardis')) %inc JJ edit ft_artifact_zvalue
 % addpath(fullfile(basepath, 'tools/qsub_tardis_slurmpreview'))
 
 ft_defaults
@@ -37,10 +37,10 @@ ft_defaults
 %%
 %%
 %% preprocessing
-% MEG2afc_preproc_setup()
+MEG2afc_preproc_setup()
 
 %% behavioral analysis
-behavior = MEG2afc_readbehavior_setup()
+% behavior = MEG2afc_readbehavior_setup()
 
 %% load behavior
 % load '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/behav/behavstruct.mat'; 
