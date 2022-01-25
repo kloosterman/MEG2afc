@@ -7,8 +7,8 @@ if ismac
     addpath(genpath(fullfile(basepath, 'plotting_tools/')))
     addpath(genpath(fullfile(basepath, 'stats_tools/')))
 else
-    basepath = '/mnt/beegfs/home/kloosterman/MATLAB'; % on the cluster
-    addpath(fullfile(basepath, 'tools'))
+    basepath = '/mnt/beegfs/home/kloosterman/GitHub'; % on the cluster
+%     addpath(fullfile(basepath, 'tools'))
     backend = 'slurm'; % local torque slurm
 end
 % addpath(genpath(fullfile(basepath, 'MEG_HH_analysis')))
