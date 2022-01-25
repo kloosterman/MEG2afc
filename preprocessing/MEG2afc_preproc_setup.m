@@ -8,7 +8,9 @@ if ismac
   %   backend = 'qsublocal';
   compile = 'no';
 else
-  basepath = '/home/mpib/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
+  %   basepath = '/home/mpib/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
+  basepath = '/mnt/beegfs/home/kloosterman/projectdata/MEG2afc'; % on the cluster
+
   backend = 'slurm';
 %   backend = 'torque';
 %     backend = 'local';
