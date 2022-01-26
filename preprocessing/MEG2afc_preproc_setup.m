@@ -71,7 +71,7 @@ end
 % cfglist = cfglist(200)
 cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
-selectrun = 0;
+selectrun = 1;
 if selectrun %&& ismac
   c = cell2mat(cfglist)
   ind = [c.subjno] == 11 & [c.ses] == 'D' & [c.irun] == 4;
