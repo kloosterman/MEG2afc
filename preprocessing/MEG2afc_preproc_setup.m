@@ -32,10 +32,9 @@ PREOUT = fullfile(basepath, sprintf('preproc%s', linenoise_rem));
 mkdir(PREOUT)
 mkdir(fullfile(PREOUT, 'figures'))
 
-overwrite = 1;
+overwrite = 0;
 
 SUBJ= [1:5, 7:9, 11:21];
-% SUBJ= 15;
 
 sesdirs = {'A' 'B' 'C' 'D'};
 sesdir2cond = {'plac_ipsi', 'drug_ipsi', 'plac_contra', 'drug_contra'};
@@ -60,8 +59,9 @@ for isub = 1:length(SUBJ)
       cfg.ses = sesdirs{ises};
 %       cfg.outfile = fullfile(PREOUT, sprintf('NK%d_%s_run%d.mat', SUBJ(isub), sesdir2cond{ises}, irun)); % runno appended below
       cfg.outfile = fullfile(PREOUT, sprintf('NK%d_%s_run%d_zapline.mat', SUBJ(isub), sesdir2cond{ises}, irun)); % runno appended below
-      
-      if ~exist(cfg.outfile, 'file') || overwrite
+      outfile_hb = fullfile(PREOUT, 'heartbeats', sprintf('NK%d_%s_run%d.mat', SUBJ(isub), sesdir2cond{ises}, irun)); % runno appended below
+       
+      if ~exist(outfile_hb, 'file') || overwrite
         cfglist = [cfglist cfg];
       end
     end
@@ -74,7 +74,7 @@ cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 selectrun = 0;
 if selectrun %&& ismac
   c = cell2mat(cfglist)
-  ind = [c.subjno] == 11 & [c.ses] == 'D' & [c.irun] == 4;
+  ind = [c.subjno] == 1 & [c.ses] == 'D' & [c.irun] == 4;
   cfglist = cfglist(ind);
 end
 
