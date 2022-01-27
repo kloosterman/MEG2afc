@@ -93,7 +93,7 @@ if runontardis
     behav = cellfun(fun2run, cfglist);
   else
     behav = qsubcellfun(fun2run, cfglist, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ...
-      'StopOnError', true, 'backend', backend, 'options', options);
+      'StopOnError', false, 'backend', backend, 'options', options);
   end
 end
 disp 'save raw behav struct array'
