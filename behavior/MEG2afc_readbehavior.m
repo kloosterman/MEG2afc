@@ -136,16 +136,37 @@ for irun = 1:length(runlist)
   ddmmat_runs = [ddmmat_runs; ddmmat];
   trl_runs = [trl_runs; trl];
   
-  disp 'get heartbeats'
-  cfg=[];
-  cfg.continuous = 'no';
-  cfg.artfctdef.ecg.feedback = 'no';
-  cfg.artfctdef.ecg.channel = 'EEG059';
-  cfg.artfctdef.ecg.inspect = 'EEG059'; %Nx1 list of channels which will be shown in a QRS-locked average
-  [cfg, artifact] = ft_artifact_ecg(cfg, data_eye);
-  netdur = sum(cellfun(@length, data_eye.time)) / data_eye.fsample / 60;
-  bpm(irun,1) = length(artifact) / netdur;
+%   disp 'get heartbeats'
+%   cfg=[];
+%   cfg.continuous = 'no';
+%   cfg.artfctdef.ecg.feedback = 'no';
+%   cfg.artfctdef.ecg.channel = 'EEG059';
+%   cfg.artfctdef.ecg.inspect = 'EEG059'; %Nx1 list of channels which will be shown in a QRS-locked average
+%   [cfg, artifact] = ft_artifact_ecg(cfg, data_eye);
+%   netdur = sum(cellfun(@length, data_eye.time)) / data_eye.fsample / 60;
+%   bpm(irun,1) = length(artifact) / netdur;
   
+  %%
+  disp 'Detecting heartbeats . . .' % updated to address 1 funny subject
+  cfg=[];
+%   cfg.trl = [(data_eye.fsample*3) length(data_eye.trial{1})-(data_eye.fsample*3) 0];
+  cfg.continuous = 'no';
+  cfg.artfctdef.ecg.channel = {'EEG059'};
+  if ismac
+    cfg.artfctdef.ecg.feedback = 'no';
+  else
+    cfg.artfctdef.ecg.feedback = 'no';
+  end
+  cfg.artfctdef.ecg.inspect = 'EEG059';
+  [cfg_heartbeats, heartbeats] = ft_artifact_ecg(cfg, data_eye);
+  
+  cfg_heartbeats.heartbeats = heartbeats;
+  inter_beat_durs = diff(heartbeats(:,1)) / data_eye.fsample; % in sec
+  inter_beat_durs = inter_beat_durs(zscore(inter_beat_durs) < 3); % remove outlier durs, indicates ECG is loose
+  bpm(irun,1) = length(inter_beat_durs) / (sum(inter_beat_durs)/60);
+  cfg_heartbeats.bpm = bpm;
+
+  %%
   disp 'get baseline pupil'
   cfg=[];
   cfg.channel = 'EYE_DIAMETER';

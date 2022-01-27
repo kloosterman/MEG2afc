@@ -8,8 +8,8 @@ if ismac
   compile = 'no';
 else
   basepath = '/home/mpib/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
-  %     backend = 'slurm';
-  backend = 'torque';
+      backend = 'slurm';
+%   backend = 'torque';
   %       backend = 'local';
   %   compile = 'yes';
   compile = 'no';

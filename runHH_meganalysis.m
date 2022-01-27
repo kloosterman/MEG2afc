@@ -37,10 +37,10 @@ ft_defaults
 %%
 %%
 %% preprocessing
-MEG2afc_preproc_setup()
+% MEG2afc_preproc_setup()
 
 %% behavioral analysis
-% behavior = MEG2afc_readbehavior_setup()
+behavior = MEG2afc_readbehavior_setup()
 
 %% load behavior
 % load '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/behav/behavstruct.mat'; 

@@ -2,6 +2,7 @@ function [bpm] =  MEG2afc_plot_heartbeats()
 
 PREIN = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/preproczapline-plus/heartbeats';
 cd(PREIN)
+PREOUT = '/Users/kloosterman/Dropbox/PROJECTS/MEG2afc/ABC_project/MEG2afc_paper/behavdata';
 
 drugconds = {'drug' 'plac'};
 simonconds = {'contra' 'ipsi'};
@@ -46,4 +47,23 @@ bpm = squeeze(nanmean(bpm,4));
 bpm(:,1) - bpm(:,2)
 mean(bpm)
 figure; plot(bpm')
+
+%% make table, export
+subjid={};
+for isub = 1:length(SUBJ)
+  subjid{isub,1} = sprintf('NK%d', SUBJ(isub));
+end
+t = table(subjid, bpm(:,1), bpm(:,2), 'VariableNames', {'subjID', 'ATX' 'placebo'});
+writetable(t, fullfile(PREOUT, 'heartbeats_MEGatx.csv'))
+
+%% also write csv for pupil
+load(fullfile(PREOUT, 'behavstruct.mat' ));
+pupil = squeeze(behavior.basepupil(:,end,1:2,3))
+figure; plot(pupil')
+
+[h,p]=ttest(pupil(:,1), pupil(:,2))
+mean(pupil)
+
+t = table(subjid, pupil(:,1), pupil(:,2), 'VariableNames', {'subjID', 'ATX' 'placebo'});
+writetable(t, fullfile(PREOUT, 'pupil_MEGatx.csv'))
 
