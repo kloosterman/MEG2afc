@@ -13,7 +13,7 @@ else
 
   backend = 'slurm';
 %   backend = 'torque';
-    backend = 'local';
+%     backend = 'local';
 %   compile = 'yes';
     compile = 'no';
 end
