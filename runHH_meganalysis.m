@@ -4,7 +4,7 @@
 if ismac
     basepath = '/Users/kloosterman/Documents/GitHub/'; % local
     backend = 'none'; % local torque2    addpath(fullfile(basepath, 'MEG2afc'))
-    addpath(genpath(fullfile(basepath, 'plotting_tools/')))
+    addpath(genpath(fullfile(basepath, 'plotting-tools/')))
     addpath(genpath(fullfile(basepath, 'stats_tools/')))
 else
     basepath = '/mnt/beegfs/home/kloosterman/GitHub'; % on the cluster

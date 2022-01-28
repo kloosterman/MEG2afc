@@ -42,7 +42,7 @@ end
 bpm = nanmean(bpm);
 bpm = squeeze(nanmean(bpm,4));
 
-[h,p]=ttest(bpm(:,1), bpm(:,2))
+[h,p, ~, stats]=ttest(bpm(:,1), bpm(:,2))
 
 bpm(:,1) - bpm(:,2)
 mean(bpm)

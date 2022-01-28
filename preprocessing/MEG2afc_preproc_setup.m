@@ -32,7 +32,7 @@ PREOUT = fullfile(basepath, sprintf('preproc%s', linenoise_rem));
 mkdir(PREOUT)
 mkdir(fullfile(PREOUT, 'figures'))
 
-overwrite = 0;
+overwrite = 1;
 
 SUBJ= [1:5, 7:9, 11:21];
 
