@@ -46,8 +46,8 @@ cfg.PREOUT = PREOUT;
 cfg.linenoise_rem = linenoise_rem;
 cfglist = {};
 
-for isub = 1:length(SUBJ) 
-  for ises = 1:4
+for isub = 1%:length(SUBJ) 
+  for ises = 3 %1:4
     sesdir = fullfile(PREIN, ['NK' int2str(SUBJ(isub))],  sesdirs{ises}, 'meg');
     if ~exist(sesdir, 'dir'); continue; end
     cd(sesdir)
