@@ -40,7 +40,7 @@ ft_defaults
 % MEG2afc_preproc_setup()
 
 %% behavioral analysis
-behavior = MEG2afc_readbehavior_setup()
+% behavior = MEG2afc_readbehavior_setup()
 
 %% load behavior
 % load '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/behav/behavstruct.mat'; 
@@ -49,7 +49,7 @@ behavior = MEG2afc_readbehavior_setup()
 % MEG2afc_behaviorplot(behavior)
 
 %% freqanalysis
-% MEG2afc_freq_setup()
+MEG2afc_freq_setup()
 
 %% load and combine freqs of sessions
 % [megdat] = MEG2afc_mergefreq( 'BLC' ); % 'raw' or BLC, TODO get both, will fit

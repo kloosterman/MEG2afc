@@ -3,7 +3,7 @@ function MEG2afc_freq_setup()
 
 if ismac
 %   basepath = '/Users/kloosterman/beegfs/projectdata/MEG2afc/'; %yesno or 2afc
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/'; %yesno or 2afc
   backend = 'local';
   compile = 'no';
 else

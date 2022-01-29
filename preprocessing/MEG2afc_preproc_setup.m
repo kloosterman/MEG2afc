@@ -19,7 +19,7 @@ else
 end
 stack = 1;
 timreq = 240; %in minutes per run
-memreq = 16000; % in MB
+memreq = 8000; % in MB
 
 linenoise_rem = 'zapline-plus'; % bandstop zapline zapline-plus DFT
  
