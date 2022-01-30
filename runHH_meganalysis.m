@@ -17,11 +17,12 @@ addpath(genpath_exclude(fullfile(basepath, 'MEG2afc'), {'\.git'} ))
 
 % addpath(fullfile(basepath, 'tools', 'fieldtrip-20170611')) %inc JJ edit ft_artifact_zvalue
 addpath(fullfile(basepath, 'fieldtrip')) % cloned on 13 09 19
+ft_defaults
+addpath(fullfile(basepath, 'fieldtrip_dev')) 
 addpath(fullfile(basepath, 'zapline-plus')) 
 addpath(fullfile(basepath, 'qsub-tardis')) %inc JJ edit ft_artifact_zvalue
 % addpath(fullfile(basepath, 'tools/qsub_tardis_slurmpreview'))
 
-ft_defaults
 % addpath(fullfile(basepath, 'tools', 'mmse')) %
 % addpath(fullfile(basepath, 'tools', 'dva')) 
 % addpath(fullfile(basepath, 'tools', 'statfun')) 
