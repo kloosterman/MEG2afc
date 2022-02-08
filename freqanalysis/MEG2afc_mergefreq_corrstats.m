@@ -53,8 +53,8 @@ behavnames = {...
   };
 
 behavnames_ctrl = {... % control for these vars
-  {'ddm_acc_perrun' 'a'}
-  {'ddm_acc_perrun' 't'}
+%   {'ddm_acc_perrun' 'a'}
+%   {'ddm_acc_perrun' 't'}
   };
 % behavnames_ctrl = {... % control for these vars
 % %   {'ddm_histbias_perrun' 'histshift_z'}

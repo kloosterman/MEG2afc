@@ -12,7 +12,7 @@ else
   basepath = '/home/beegfs/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
 end
 
-PREIN = fullfile(basepath, 'freqzapline-plus'); % sigmaincrease set to 0
+PREIN = fullfile(basepath, 'freqzapline-plus'); % freqbandstop freqzapline-plus
 cd(PREIN)
 
 disp 'load behavior'
@@ -114,6 +114,8 @@ end
 
 freq_subj = ft_appendfreq(cfg,freq_subj{:});
 
+save freq_subj freq_subj
+
 % cfg=[];
 % cfg.layout = 'CTF275.lay'
 % ft_multiplotTFR(cfg, freq_subj)
@@ -165,7 +167,7 @@ cfg.clusterstatistic = 'maxsum';
 cfg.tail             = 0;
 cfg.clustertail      = 0;
 cfg.alpha            = 0.025;
-cfg.numrandomization = 1000;
+cfg.numrandomization = 100;
 cfg.neighbours       = neighbours;
 cfg.minnbchan        = 0;
 cfg.spmversion = 'spm12';
@@ -177,7 +179,9 @@ tempstat = ft_freqstatistics(cfg, freq_subj);
 %         figure; scatter(scatterdat, cfg.design(1,:));
 %         title(sprintf('r = %1.2f, rho = %1.2f', corr(scatterdat, cfg.design(1,:)', 'type', 'Pearson'), corr(scatterdat, cfg.design(1,:)', 'type', 'Spearman' )))
 
-% plot
+save rmcorr_stat tempstat 
+
+%% plot
 clussign = 'pos'
 
 load colormap_jetlightgray.mat
@@ -290,7 +294,7 @@ for imod = 1 %1:4
         
         for itrig = 1:2
           curstat = megdat.corrstat{imod, ibehav,ifreq,itrig};          
-          cfg.titleTFR = sprintf('%s\n',curstat.behavname{:}, curstat.megtype);;
+%           cfg.titleTFR = sprintf('%s\n',curstat.behavname{:}, curstat.megtype);;
           cfg.subplotind = irow*4 + subplotind(itrig,:);
           if length(curstat.label) == 131 % only 131 sensors for latr
             cfg.layout = 'CTF275_helmet_latr.mat';
@@ -309,6 +313,7 @@ for imod = 1 %1:4
           if SAV
             %               saveas(gcf, fullfile(megdat.PREOUT, sprintf('corr_%svs%s.pdf',  megdat.corrstat{ibehav,1,1}.megtype,  [megdat.corrstat{ibehav,1,1}.behavname{:}] )))
             saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_vs_%s_corr.pdf', ifig,  curstat.megtype, curstat.behavname{:} )))
+            saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_vs_%s_corr.png', ifig,  curstat.megtype, curstat.behavname{:} )))
           end
           f = figure;      f.Position = [ 680          75         612        792 ]; % A4 formaat
           ifig = ifig+1;

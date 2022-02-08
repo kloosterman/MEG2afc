@@ -6,6 +6,7 @@ if ismac
     backend = 'none'; % local torque2    addpath(fullfile(basepath, 'MEG2afc'))
     addpath(genpath(fullfile(basepath, 'plotting-tools/')))
     addpath(genpath(fullfile(basepath, 'stats_tools/')))
+    addpath(fullfile('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/NoiseTools')) % robust detrend (MSE)
 else
     basepath = '/mnt/beegfs/home/kloosterman/GitHub'; % on the cluster
 %     addpath(fullfile(basepath, 'tools'))
@@ -50,7 +51,7 @@ addpath(fullfile(basepath, 'qsub-tardis')) %inc JJ edit ft_artifact_zvalue
 % MEG2afc_behaviorplot(behavior)
 
 %% freqanalysis
-MEG2afc_freq_setup()
+% MEG2afc_freq_setup()
 
 %% load and combine freqs of sessions
 % [megdat] = MEG2afc_mergefreq( 'BLC' ); % 'raw' or BLC, TODO get both, will fit
