@@ -75,10 +75,10 @@ for irun = 1:length(runlist)
   for idiff = 1:2
     if contains(sesname, 'contra')
       H = sum(stim == 1 & difficulty == idiff & button == 2) / sum(stim == 1 & difficulty == idiff);
-      FA = sum(stim == 2 & difficulty == idiff & button == 2) / sum(stim == 1& difficulty == idiff);
+      FA = sum(stim == 2 & difficulty == idiff & button == 2) / sum(stim == 2 & difficulty == idiff);
     else
       H = sum(stim == 1 & difficulty == idiff & button == 1) / sum(stim == 1 & difficulty == idiff);
-      FA = sum(stim == 2 & difficulty == idiff & button == 1) / sum(stim == 1& difficulty == idiff);
+      FA = sum(stim == 2 & difficulty == idiff & button == 1) / sum(stim == 2 & difficulty == idiff);
     end
     if H == 1; H = 0.99; end
     if FA == 0; FA = 0.01; end

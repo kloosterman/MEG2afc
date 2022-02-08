@@ -23,30 +23,33 @@ behavnames = {
   }; % all matrices
 close all
 nrow=8; ncol=5;
-f = figure; iplot=0;
-Fontsize = 6;
-f.Position =[   680   467   85*ncol   100*nrow];
-for im = 1:length(behavnames)
-  iplot=iplot+1;
-  if isempty(behavnames{im})
-    continue;
+diffleg = {'strong', 'weak', ''};
+for idiff=1:3
+  f = figure; iplot=0;
+  Fontsize = 6;
+  f.Position =[   680   467   85*ncol   100*nrow];
+  for im = 1:length(behavnames)
+    iplot=iplot+1;
+    if isempty(behavnames{im})
+      continue;
+    end
+    curb = getfield(b, behavnames{im}{:});
+    if length(size(curb)) == 5
+      data = squeeze(curb(:,end, 1:2, 3, idiff));  % dims: subj runs drug motor diff
+    elseif length(size(curb)) == 4
+      data = squeeze(curb(:,end, 1:2, 3));  % dims: subj runs drug motor
+    end
+    %   disp 'Drop NK1 high drift'
+    %   data = data(2:end,:);
+    subplot(nrow,ncol,iplot); hold on; % axis tight
+    plotspreadfig(data, Fontsize, condlabels, b.SUBJ);
+    title(sprintf('%s %s', behavnames{im}{1}, diffleg{idiff}), 'Fontsize', Fontsize-1)
   end
-  curb = getfield(b, behavnames{im}{:});
-  if length(size(curb)) == 5
-    data = squeeze(curb(:,end, 1:2, 3, 3));  % dims: subj runs drug motor diff
-  elseif length(size(curb)) == 4
-    data = squeeze(curb(:,end, 1:2, 3));  % dims: subj runs drug motor
+  if SAV
+    %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
+    saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_%s.png', diffleg{idiff} )))
+    cd(b.PREOUT)
   end
-  %   disp 'Drop NK1 high drift'
-  %   data = data(2:end,:);
-  subplot(nrow,ncol,iplot); hold on; % axis tight
-  plotspreadfig(data, Fontsize, condlabels, b.SUBJ);
-  title(behavnames{im}, 'Fontsize', Fontsize-1)
-end
-if SAV
-  %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
-  saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.png' )))
-  cd(b.PREOUT)
 end
 
 %% plot things per session

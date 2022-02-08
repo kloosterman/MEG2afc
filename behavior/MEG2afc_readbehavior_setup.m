@@ -22,7 +22,7 @@ PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
 saveddm_mat = 0; % save csv for hddm 
-runontardis = 0; % run it or load behav per session from file
+runontardis = 1; % run it or load behav per session from file
 
 % subject issues: 
 % NK1: high d' (pilot)  KEEP
