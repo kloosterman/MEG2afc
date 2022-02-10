@@ -22,7 +22,7 @@ PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
 saveddm_mat = 0; % save csv for hddm 
-runontardis = 1; % run it or load behav per session from file
+runontardis = 0; % run it or load behav per session from file
 
 % subject issues: 
 % NK1: high d' (pilot)  KEEP
@@ -124,13 +124,13 @@ disp 'get bmeas dprime and criterion'; disp 'get RT'
 disp 'get p_repeat separately for L and R repeats'
 bmeas = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
-  behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 8, 2, nsub,2,2); % dims: runs diff subj drug motor
+  behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, 2, nsub,2,2); % dims: runs diff subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [3 1 4 5 2]); % dims: subj runs drug motor diff
   behavior.([bmeas{im} 'dimord']) = 'subj_runs_drug_motor_diff';
   behavior.(bmeas{im})(:,:,4,:,:) = behavior.(bmeas{im})(:,:,1,:,:) - behavior.(bmeas{im})(:,:,2,:,:);
   behavior.(bmeas{im})(:,:,:,:,3) = mean(behavior.(bmeas{im}), 5); % avg over diff
   behavior.(bmeas{im})(:,:,:,3,:) = nanmean(behavior.(bmeas{im}), 4); % avg over motor ses
-  behavior.(bmeas{im})(:,9,:,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
+%   behavior.(bmeas{im})(:,9,:,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
 end
 
 %%

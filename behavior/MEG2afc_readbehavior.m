@@ -43,6 +43,10 @@ trl_runs = [];
 datakeep={};
 disp 'compute behavior per run'
 for irun = 1:length(runlist)+1
+  if length(runlist) == 0
+    disp('no data')
+    continue
+  end
   if irun < length(runlist)+1
     disp('Loading');    disp(runlist(irun).name)
     load(runlist(irun).name, 'data_eye'); % only eye data!!
