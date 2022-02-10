@@ -46,12 +46,13 @@ for irun = 1:length(runlist)+1
   if irun < length(runlist)+1
     disp('Loading');    disp(runlist(irun).name)
     load(runlist(irun).name, 'data_eye'); % only eye data!!
+    data_eye.fsample = round(data_eye.fsample); % sometimes slightly off
     datakeep{end+1} = data_eye;
   else
     disp 'compute collapsed over runs'
     data_eye = ft_appenddata([], datakeep{:});
     irun = 9; % always put in 9
-    clear datakeep
+%     clear datakeep
   end
 
   disp 'compute rep prob'
