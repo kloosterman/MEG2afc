@@ -29,22 +29,31 @@ behav = [];
 cd(PREIN)
 
 runlist = dir(sprintf('%s_%s_run*.mat', SUBJ, sesname));
-p_repeatunbalanced = nan(8,1);
-p_repeatbalanced = nan(8,2);
-button_bias = nan(8,2);
-dprime = nan(8,2); % easy hard
-criterion = nan(8,2);
-bpm = nan(8,1);
-basepupil = nan(8,1);
-RT= nan(8,2);
-RTsd= nan(8,2);
+p_repeatunbalanced = nan(9,1);
+p_repeatbalanced = nan(9,2);
+button_bias = nan(9,2);
+dprime = nan(9,2); % easy hard
+criterion = nan(9,2);
+bpm = nan(9,1);
+basepupil = nan(9,1);
+RT= nan(9,2);
+RTsd= nan(9,2);
 ddmmat_runs = [];
 trl_runs = [];
+datakeep={};
 disp 'compute behavior per run'
-for irun = 1:length(runlist)
-  disp('Loading');    disp(runlist(irun).name)
-  load(runlist(irun).name, 'data_eye'); % only eye data!!
-    
+for irun = 1:length(runlist)+1
+  if irun < length(runlist)+1
+    disp('Loading');    disp(runlist(irun).name)
+    load(runlist(irun).name, 'data_eye'); % only eye data!!
+    datakeep{end+1} = data_eye;
+  else
+    disp 'compute collapsed over runs'
+    data_eye = ft_appenddata([], datakeep{:});
+    irun = 9; % always put in 9
+    clear datakeep
+  end
+
   disp 'compute rep prob'
   %   trl = data.cfg.previous.previous{1}.previous.previous.previous.previous.trl;
   trl = ft_findcfg(data_eye.cfg, 'trl');
