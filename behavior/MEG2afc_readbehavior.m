@@ -38,6 +38,7 @@ bpm = nan(9,1);
 basepupil = nan(9,1);
 RT= nan(9,2);
 RTsd= nan(9,2);
+ntrials = nan(9,1);
 ddmmat_runs = [];
 trl_runs = [];
 datakeep={};
@@ -72,6 +73,8 @@ for irun = 1:length(runlist)+1
   if trl(:,13) == 2 % presscontra session
     choice = mod( choice,2 ) + 1;
   end
+
+  ntrials(irun,1) = size(trl,1);
 
   % use choice to compute p_repeatbalanced
   p_repeatunbalanced(irun,1) = sum(diff(choice) == 0) / (numel(choice(2:end))); % trials with same choice as previous trial / ntrials
@@ -203,6 +206,7 @@ behav.ddmmat_runs = ddmmat_runs;
 behav.bpm = bpm;
 behav.basepupil = basepupil;
 behav.trl_runs = trl_runs; % just all trials, nothing removed
+behav.ntrials = ntrials;
 
 disp(outfile);
 save(outfile, 'behav');

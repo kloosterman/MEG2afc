@@ -22,7 +22,7 @@ PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
 saveddm_mat = 0; % save csv for hddm 
-runontardis = 0; % run it or load behav per session from file
+runontardis = 1; % run it or load behav per session from file
 
 % subject issues: 
 % NK1: high d' (pilot)  KEEP
@@ -30,7 +30,9 @@ runontardis = 0; % run it or load behav per session from file
 % NK10: bad DDM fits (weird RT distributions, outlier driftbias) DROP
 
 SUBJ = [1:5, 7:9, 11:21]; % all
+% SUBJ = [2]; % 
 SUBJ_idx= [0:18]; % corresponding Python counting
+% SUBJ_idx=1;
 % SUBJ= [1, 3:5, 7:9, 11:21]; % drop NK2, misses session
 % SUBJ_idx= [0, 2:18]; % corresponding Python counting, drop NK2, misses session
 
@@ -130,7 +132,7 @@ for im = 1:length(bmeas)
   behavior.(bmeas{im})(:,:,4,:,:) = behavior.(bmeas{im})(:,:,1,:,:) - behavior.(bmeas{im})(:,:,2,:,:);
   behavior.(bmeas{im})(:,:,:,:,3) = mean(behavior.(bmeas{im}), 5); % avg over diff
   behavior.(bmeas{im})(:,:,:,3,:) = nanmean(behavior.(bmeas{im}), 4); % avg over motor ses
-%   behavior.(bmeas{im})(:,9,:,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
+  behavior.(bmeas{im})(:,9,:,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
 end
 
 %%
@@ -154,7 +156,7 @@ behavior.RThistedges = edges;
 disp 'get P(repeat)'
 bmeas = {'p_repeatunbalanced' 'basepupil' 'bpm' };
 for im = 1:length(bmeas)
-  behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 8, nsub,2,2); % dims: runs subj drug motor
+  behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, nsub,2,2); % dims: runs subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [2 1 3 4]); % dimord subj runs drug motor
   behavior.(bmeas{im})(:,:,4,:) = behavior.(bmeas{im})(:,:,1,:) - behavior.(bmeas{im})(:,:,2,:);
   behavior.(bmeas{im})(:,:,:,3) = nanmean(behavior.(bmeas{im}), 4); % avg over motor ses

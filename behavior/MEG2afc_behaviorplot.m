@@ -35,9 +35,9 @@ for idiff=1:3
     end
     curb = getfield(b, behavnames{im}{:});
     if length(size(curb)) == 5
-      data = squeeze(curb(:,end, 1:2, 3, idiff));  % dims: subj runs drug motor diff
+      data = squeeze(curb(:,9, 1:2, 3, idiff));  % dims: subj runs drug motor diff
     elseif length(size(curb)) == 4
-      data = squeeze(curb(:,end, 1:2, 3));  % dims: subj runs drug motor
+      data = squeeze(curb(:,9, 1:2, 3));  % dims: subj runs drug motor
     end
     %   disp 'Drop NK1 high drift'
     %   data = data(2:end,:);
