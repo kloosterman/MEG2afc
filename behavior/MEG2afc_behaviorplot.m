@@ -5,27 +5,34 @@ SAV=1;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 % behavnames = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd'}; % 5D matrices
 behavnames = {
-  {'dprime'}; {'criterion'};  { 'RT'} ;{ 'RTsd' }; {};
-  {'basepupil' } ;{'bpm'};  { 'p_repeatbalanced'};  {'p_repeatunbalanced' }; {'button_bias'};
+  {'dprime'};  { 'ntrials' }; %{'criterion'};  { 'RT'} ;{ 'RTsd' };
+%   {'basepupil' } ;{'bpm'};  { 'p_repeatbalanced'};  {'p_repeatunbalanced' }; {'button_bias'};
   
-  %   {'chi_accuracy_basic_nomotor' 'v'}; {'chi_accuracy_basic_nomotor' 'a'}; {'chi_accuracy_basic_nomotor' 't'};  {};  {};
-  %   {'chi_accuracy_basic' 'v'}; {'chi_accuracy_basic' 'a'}; {'chi_accuracy_basic' 't'}; {}; {};
-  {'ddm_acc_perrun' 'v'}; {'ddm_acc_perrun' 'a'}; {'ddm_acc_perrun' 't'}; {}; {};
-  {'ddm_acc_perrun_ol' 'v'}; {'ddm_acc_perrun_ol' 'a'}; {'ddm_acc_perrun_ol' 't'}; {}; {};
-  %   {'chi_accuracy_basic_runs' 'v'}; {'chi_accuracy_basic_runs' 'a'}; {'chi_accuracy_basic_runs' 't'}; {}; {};
-  
-  %   {'chi_prevresp_z_dc_nomotor' 'v'};{'chi_prevresp_z_dc_nomotor' 'a'}; {'chi_prevresp_z_dc_nomotor' 't'}; {'chi_prevresp_z_dc_nomotor' 'histshift_dc'}; {'chi_prevresp_z_dc_nomotor' 'histshift_z'};
-  %   {'chi_prevresp_z_dc' 'v'};{'chi_prevresp_z_dc' 'a'}; {'chi_prevresp_z_dc' 't'}; {'chi_prevresp_z_dc' 'histshift_dc'}; {'chi_prevresp_z_dc' 'histshift_z'};
-  {'ddm_histbias_perrun' 'v'};{'ddm_histbias_perrun' 'a'}; {'ddm_histbias_perrun' 't'}; {'ddm_histbias_perrun' 'histshift_dc'}; {'ddm_histbias_perrun' 'histshift_z'};
-  {'ddm_histbias_perrun_ol' 'v'};{'ddm_histbias_perrun_ol' 'a'}; {'ddm_histbias_perrun_ol' 't'}; {'ddm_histbias_perrun_ol' 'histshift_dc'}; {'ddm_histbias_perrun_ol' 'histshift_z'};
-  %   {'chi_prevresp_z_dc_runs' 'v'};{'chi_prevresp_z_dc_runs' 'a'}; {'chi_prevresp_z_dc_runs' 't'}; {'chi_prevresp_z_dc_runs' 'histshift_dc'}; {'chi_prevresp_z_dc_runs' 'histshift_z'};
-  %   {'ddm_histbias_perses' 'v'};{'ddm_histbias_perses' 'a'}; {'ddm_histbias_perses' 't'}; {'ddm_histbias_perses' 'histshift_dc'}; {'ddm_histbias_perses' 'histshift_z'};
+%   %   {'chi_accuracy_basic_nomotor' 'v'}; {'chi_accuracy_basic_nomotor' 'a'}; {'chi_accuracy_basic_nomotor' 't'};  {};  {};
+%   %   {'chi_accuracy_basic' 'v'}; {'chi_accuracy_basic' 'a'}; {'chi_accuracy_basic' 't'}; {}; {};
+%   {'ddm_acc_perrun' 'v'}; {'ddm_acc_perrun' 'a'}; {'ddm_acc_perrun' 't'}; {}; {};
+%   {'ddm_acc_perrun_ol' 'v'}; {'ddm_acc_perrun_ol' 'a'}; {'ddm_acc_perrun_ol' 't'}; {}; {};
+%   %   {'chi_accuracy_basic_runs' 'v'}; {'chi_accuracy_basic_runs' 'a'}; {'chi_accuracy_basic_runs' 't'}; {}; {};
+%   
+%   %   {'chi_prevresp_z_dc_nomotor' 'v'};{'chi_prevresp_z_dc_nomotor' 'a'}; {'chi_prevresp_z_dc_nomotor' 't'}; {'chi_prevresp_z_dc_nomotor' 'histshift_dc'}; {'chi_prevresp_z_dc_nomotor' 'histshift_z'};
+%   %   {'chi_prevresp_z_dc' 'v'};{'chi_prevresp_z_dc' 'a'}; {'chi_prevresp_z_dc' 't'}; {'chi_prevresp_z_dc' 'histshift_dc'}; {'chi_prevresp_z_dc' 'histshift_z'};
+%   {'ddm_histbias_perrun' 'v'};{'ddm_histbias_perrun' 'a'}; {'ddm_histbias_perrun' 't'}; {'ddm_histbias_perrun' 'histshift_dc'}; {'ddm_histbias_perrun' 'histshift_z'};
+%   {'ddm_histbias_perrun_ol' 'v'};{'ddm_histbias_perrun_ol' 'a'}; {'ddm_histbias_perrun_ol' 't'}; {'ddm_histbias_perrun_ol' 'histshift_dc'}; {'ddm_histbias_perrun_ol' 'histshift_z'};
+%   %   {'chi_prevresp_z_dc_runs' 'v'};{'chi_prevresp_z_dc_runs' 'a'}; {'chi_prevresp_z_dc_runs' 't'}; {'chi_prevresp_z_dc_runs' 'histshift_dc'}; {'chi_prevresp_z_dc_runs' 'histshift_z'};
+%   %   {'ddm_histbias_perses' 'v'};{'ddm_histbias_perses' 'a'}; {'ddm_histbias_perses' 't'}; {'ddm_histbias_perses' 'histshift_dc'}; {'ddm_histbias_perses' 'histshift_z'};
   }; % all matrices
 close all
-nrow=8; ncol=5;
+nrow=8; ncol=6;
 diffleg = {'strong', 'weak', ''};
+
+avgtypestr = 'averaged'; % runs averaged or taken together
+if strcmp(avgtypestr , 'averaged') % computed once collapsed over runs (9), or averaged over runs (10)
+  avgtype = 10;
+elseif strcmp(avgtypestr , 'together') % computed once collapsed over runs (9), or averaged over runs (10)
+  avgtype = 9;
+end
+f = figure; iplot=0;
 for idiff=1:3
-  f = figure; iplot=0;
   Fontsize = 6;
   f.Position =[   680   467   85*ncol   100*nrow];
   for im = 1:length(behavnames)
@@ -35,7 +42,7 @@ for idiff=1:3
     end
     curb = getfield(b, behavnames{im}{:});
     if length(size(curb)) == 5
-      data = squeeze(curb(:,9, 1:2, 3, idiff));  % dims: subj runs drug motor diff
+      data = squeeze(curb(:,avgtype, 1:2, 3, idiff));  % dims: subj runs drug motor diff
     elseif length(size(curb)) == 4
       data = squeeze(curb(:,9, 1:2, 3));  % dims: subj runs drug motor
     end
@@ -43,7 +50,7 @@ for idiff=1:3
     %   data = data(2:end,:);
     subplot(nrow,ncol,iplot); hold on; % axis tight
     plotspreadfig(data, Fontsize, condlabels, b.SUBJ);
-    title(sprintf('%s %s', behavnames{im}{1}, diffleg{idiff}), 'Fontsize', Fontsize-1)
+    title(sprintf('%s %s\nruns %s', behavnames{im}{1}, diffleg{idiff}, avgtypestr), 'Fontsize', Fontsize-1)
   end
   if SAV
     %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
@@ -56,7 +63,7 @@ end
 SAV=1;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 behavnames = {
-  {'dprime'}; {'criterion'};  { 'RT'} ;{ 'RTsd' };
+  {'dprime'}; {'criterion'};  { 'RT'} ;{ 'RTsd' }; { 'ntrials' };
   {'ddm_acc_perrun' 'v'}; {'ddm_acc_perrun' 'a'}; {'ddm_acc_perrun' 't'};
   {'ddm_histbias_perrun_ol' 'v'};{'ddm_histbias_perrun_ol' 'a'}; {'ddm_histbias_perrun_ol' 't'}; {'ddm_histbias_perrun_ol' 'histshift_dc'}; {'ddm_histbias_perrun_ol' 'histshift_z'};
   {'basepupil' } ;{'bpm'};  { 'p_repeatbalanced'};  {'p_repeatunbalanced' }; {'button_bias'};
@@ -101,8 +108,9 @@ makezscore = false;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 condcol = {'r' 'b'};
 behavnames = {
-  {'basepupil' } ;{'bpm'};
-  %     {'dprime'};  { 'RT'} ;
+  {'basepupil' } ;{'bpm'}; {'ntrials'};
+      {'dprime'};  
+% { 'RT'} ;
   
   }; % all matrices
 
@@ -138,7 +146,7 @@ for im = 1:length(behavnames)
     for idrug=1:2
       %       plot(data(:,:,idrug)') %, Fontsize, condlabels, b.SUBJ);
       %       plot(squeeze(nanmean(data))) %, 'k', 'Linewidth', 2) %, Fontsize, condlabels, b.SUBJ);
-      h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug} )
+      h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 1 )
     end
     title(behavnames{im}, 'Fontsize', Fontsize-1)
     xlabel('Run no.')

@@ -38,7 +38,7 @@ bpm = nan(9,1);
 basepupil = nan(9,1);
 RT= nan(9,2);
 RTsd= nan(9,2);
-ntrials = nan(9,1);
+ntrials = nan(9,2);
 ddmmat_runs = [];
 trl_runs = [];
 datakeep={};
@@ -74,7 +74,6 @@ for irun = 1:length(runlist)+1
     choice = mod( choice,2 ) + 1;
   end
 
-  ntrials(irun,1) = size(trl,1);
 
   % use choice to compute p_repeatbalanced
   p_repeatunbalanced(irun,1) = sum(diff(choice) == 0) / (numel(choice(2:end))); % trials with same choice as previous trial / ntrials
@@ -106,6 +105,8 @@ for irun = 1:length(runlist)+1
 %     RTsd(irun,idiff) = std(trl(difficulty == idiff & RTok,8)) / 1200;
     RT(irun,idiff) = median(trl(difficulty == idiff,8)) / 1200; % no drop RTs
     RTsd(irun,idiff) = std(trl(difficulty == idiff,8)) / 1200;
+    ntrials(irun,idiff) = sum( difficulty == idiff);  % size(trl,1);
+
   end
   
 %   disp 'find out if blink occurred during trial'

@@ -132,7 +132,7 @@ for im = 1:length(bmeas)
   behavior.(bmeas{im})(:,:,4,:,:) = behavior.(bmeas{im})(:,:,1,:,:) - behavior.(bmeas{im})(:,:,2,:,:);
   behavior.(bmeas{im})(:,:,:,:,3) = mean(behavior.(bmeas{im}), 5); % avg over diff
   behavior.(bmeas{im})(:,:,:,3,:) = nanmean(behavior.(bmeas{im}), 4); % avg over motor ses
-  behavior.(bmeas{im})(:,9,:,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
+  behavior.(bmeas{im})(:,10,:,:,:) = nanmean(behavior.(bmeas{im})(:,1:8,:,:,:), 2); % avg over runs, 9 has  collapsed
 end
 
 %%
@@ -154,13 +154,13 @@ behavior.RThistedges = edges;
 
 %%
 disp 'get P(repeat)'
-bmeas = {'p_repeatunbalanced' 'basepupil' 'bpm' };
+bmeas = {'p_repeatunbalanced' 'basepupil' 'bpm' 'ntrials'};
 for im = 1:length(bmeas)
   behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, nsub,2,2); % dims: runs subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [2 1 3 4]); % dimord subj runs drug motor
   behavior.(bmeas{im})(:,:,4,:) = behavior.(bmeas{im})(:,:,1,:) - behavior.(bmeas{im})(:,:,2,:);
   behavior.(bmeas{im})(:,:,:,3) = nanmean(behavior.(bmeas{im}), 4); % avg over motor ses
-  behavior.(bmeas{im})(:,9,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs
+  behavior.(bmeas{im})(:,10,:,:) = nanmean(behavior.(bmeas{im}), 2); % avg over runs,  9 has  collapsed
   behavior.([bmeas{im} 'dimord']) = 'subj_runs_drug_motor';
 end
 
