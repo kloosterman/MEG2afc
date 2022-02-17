@@ -124,7 +124,7 @@ behavior.SUBJ_idx = SUBJ_idx;
 
 disp 'get bmeas dprime and criterion'; disp 'get RT'
 disp 'get p_repeat separately for L and R repeats'
-bmeas = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd'}; % p_repeatbalanced dim5 is LR
+bmeas = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd' 'ntrials'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
   behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, 2, nsub,2,2); % dims: runs diff subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [3 1 4 5 2]); % dims: subj runs drug motor diff
@@ -154,7 +154,7 @@ behavior.RThistedges = edges;
 
 %%
 disp 'get P(repeat)'
-bmeas = {'p_repeatunbalanced' 'basepupil' 'bpm' 'ntrials'};
+bmeas = {'p_repeatunbalanced' 'basepupil' 'bpm' };
 for im = 1:length(bmeas)
   behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, nsub,2,2); % dims: runs subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [2 1 3 4]); % dimord subj runs drug motor

@@ -42,6 +42,7 @@ ntrials = nan(9,2);
 ddmmat_runs = [];
 trl_runs = [];
 datakeep={};
+trlkeep = [];
 disp 'compute behavior per run'
 for irun = 1:length(runlist)+1
   if length(runlist) == 0
@@ -60,11 +61,16 @@ for irun = 1:length(runlist)+1
 %     clear datakeep
   end
 
-  disp 'compute rep prob'
-  %   trl = data.cfg.previous.previous{1}.previous.previous.previous.previous.trl;
-  trl = ft_findcfg(data_eye.cfg, 'trl');
+  if irun < length(runlist)+1
+    trl = ft_findcfg(data_eye.cfg, 'trl');
+    trlkeep = [trlkeep; trl];
+  else
+    trl = trlkeep;
+  end
+
   if omitdroppedbymeg
-    trl = trl(ismember(trl(:,10), data_eye.trialinfo(:,7)),:);
+%     trl = trl(ismember(trl(:,10), data_eye.trialinfo(:,7)),:);
+    trl = [zeros(length(data_eye.trialinfo),3) data_eye.trialinfo];
   end
   difficulty = trl(:,4);
   stim = trl(:,5);  % the stim presented to the subject
