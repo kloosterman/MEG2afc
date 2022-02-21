@@ -18,10 +18,10 @@ timreq = 5; %in minutes per run
 memreq = 3000; % in MB
 
 PREIN = fullfile(basepath, 'preproczap');
-PREOUT = fullfile(basepath, 'behav');
+PREOUT = fullfile(basepath, 'behav');  
 mkdir(PREOUT)
 
-saveddm_mat = 0; % save csv for hddm 
+saveddm_mat = 1; % save csv for hddm 
 runontardis = 0; % run it or load behav per session from file
 
 % subject issues: 
@@ -103,7 +103,7 @@ save(fullfile(PREOUT, 'rawbehav.mat'), 'behav')
 
 %%
 if saveddm_mat
-  disp 'save csv for HDDM'
+  disp 'save csv for HDDM all subj together'
   ddmmat = vertcat(behav.ddmmat_runs);
   outfile = 'ddmdat_histbias.csv';
   outdir = '/Users/kloosterman/Dropbox/PROJECTS/MEG2afc/HDDM';
@@ -114,6 +114,25 @@ if saveddm_mat
   dlmwrite(outpath, ddmmat, '-append', 'precision', 10)
   disp 'now run again without saving ddmmat'
   behavior = []; % struct with all behavior
+  
+  disp 'save csv for HDDM per subj'
+  for isub=1:19
+    ddmmat = vertcat(behav(isub,:,:).ddmmat_runs);
+    ddmmat = ddmmat(:,2:end); % drop subj index col
+    ddmmat(:,8) = ddmmat(:,8) - 1; % let it range from 0-X
+    outfile = sprintf('subj%d_ddmdat.csv', isub);
+    outdir = fullfile(PREOUT, 'HDDM');
+    mkdir(outdir)
+    outpath = fullfile(outdir, outfile);
+    fid = fopen(outpath, 'w') ;
+    % note run_nr has become subj_idx
+    fprintf(fid, 'stimulus,response,prevresp,correct,rt,drug,simon,subj_idx,difficulty,trlctr,megused\n');
+    fclose(fid);
+    dlmwrite(outpath, ddmmat, '-append', 'precision', 10)
+    disp 'now run again without saving ddmmat'
+    behavior = []; % struct with all behavior
+  end
+  
   return
 end
 
@@ -413,7 +432,7 @@ end
 % end
 
 %%
-behavior.PREOUT = PREOUT;
+behavior.PREOUT = '/Users/kloosterman/Dropbox/PROJECTS/MEG2afc/plots';
 disp 'save behavior struct array'
 save(fullfile(PREOUT, 'behavstruct.mat'), 'behavior')
 
