@@ -25,38 +25,41 @@ close all
 nrow=8; ncol=6;
 diffleg = {'strong', 'weak', ''};
 
-avgtypestr = 'averaged'; % runs averaged or taken together
-if strcmp(avgtypestr , 'averaged') % computed once collapsed over runs (9), or averaged over runs (10)
-  avgtype = 10;
-elseif strcmp(avgtypestr , 'together') % computed once collapsed over runs (9), or averaged over runs (10)
-  avgtype = 9;
-end
+avgtypestr = {'averaged' 'together'}; % runs averaged or taken together
 f = figure; iplot=0;
-for idiff=1:3
-  Fontsize = 6;
-  f.Position =[   680   467   85*ncol   100*nrow];
-  for im = 1:length(behavnames)
-    iplot=iplot+1;
-    if isempty(behavnames{im})
-      continue;
-    end
-    curb = getfield(b, behavnames{im}{:});
-    if length(size(curb)) == 5
-      data = squeeze(curb(:,avgtype, 1:2, 3, idiff));  % dims: subj runs drug motor diff
-    elseif length(size(curb)) == 4
-      data = squeeze(curb(:,9, 1:2, 3));  % dims: subj runs drug motor
-    end
-    %   disp 'Drop NK1 high drift'
-    %   data = data(2:end,:);
-    subplot(nrow,ncol,iplot); hold on; % axis tight
-    plotspreadfig(data, Fontsize, condlabels, b.SUBJ);
-    title(sprintf('%s %s\nruns %s', behavnames{im}{1}, diffleg{idiff}, avgtypestr), 'Fontsize', Fontsize-1)
+for ia = 1:2
+  if strcmp(avgtypestr{ia}, 'averaged') % computed once collapsed over runs (9), or averaged over runs (10)
+    avgtype = 10;
+  elseif strcmp(avgtypestr{ia}, 'together') % computed once collapsed over runs (9), or averaged over runs (10)
+    avgtype = 9;
   end
-  if SAV
-    %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
-    saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_%s.png', diffleg{idiff} )))
-    cd(b.PREOUT)
+  
+  for idiff=1:3
+    Fontsize = 6;
+    f.Position =[   680   467   85*ncol   100*nrow];
+    for im = 1:length(behavnames)
+      iplot=iplot+1;
+      if isempty(behavnames{im})
+        continue;
+      end
+      curb = getfield(b, behavnames{im}{:});
+      if length(size(curb)) == 5
+        data = squeeze(curb(:,avgtype, 1:2, 3, idiff));  % dims: subj runs drug motor diff
+      elseif length(size(curb)) == 4
+        data = squeeze(curb(:,9, 1:2, 3));  % dims: subj runs drug motor
+      end
+      %   disp 'Drop NK1 high drift'
+      %   data = data(2:end,:);
+      subplot(nrow,ncol,iplot); hold on; % axis tight
+      plotspreadfig(data, Fontsize, condlabels, b.SUBJ);
+      title(sprintf('%s %s\nruns %s', behavnames{im}{1}, diffleg{idiff}, avgtypestr{ia}), 'Fontsize', Fontsize-1)
+    end
   end
+end
+if SAV
+  %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_%s_runs%s.png', diffleg{idiff}, avgtypestr{ia} )))
+  cd(b.PREOUT)
 end
 
 %% plot things per session
