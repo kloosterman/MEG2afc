@@ -149,26 +149,27 @@ for irun = 1:length(runlist)+1
   ddmmat(:,11) = trl(:,10); % trial counter
   ddmmat(:,12) = ismember(trl(:,10), data_eye.trialinfo(:,7)); % 1 = included in MEG
   
-%   minRT = 0.2; % in sec
-%   ddmmat = ddmmat(ddmmat(:,6) > (minRT*1200),:); % drop RT's > 3SD
-%   ddmmat = ddmmat(zscore(ddmmat(:,6))<3,:); % drop RT's > 3SD
-
-%   ddmmat = ddmmat(~isnan(ddmmat(:,4)),:); % remove trials without prevresp
-%   ddmmat = ddmmat(ddmmat(:,3)>-1,:); % remove missed responses
-%   ddmmat = ddmmat(ddmmat(:,4)>-1,:); % remove missed previous resp
+  %   minRT = 0.2; % in sec
+  %   ddmmat = ddmmat(ddmmat(:,6) > (minRT*1200),:); % drop RT's > 3SD
+  %   ddmmat = ddmmat(zscore(ddmmat(:,6))<3,:); % drop RT's > 3SD
   
-  ddmmat_runs = [ddmmat_runs; ddmmat];
-  trl_runs = [trl_runs; trl];
+  %   ddmmat = ddmmat(~isnan(ddmmat(:,4)),:); % remove trials without prevresp
+  %   ddmmat = ddmmat(ddmmat(:,3)>-1,:); % remove missed responses
+  %   ddmmat = ddmmat(ddmmat(:,4)>-1,:); % remove missed previous resp
   
-%   disp 'get heartbeats'
-%   cfg=[];
-%   cfg.continuous = 'no';
-%   cfg.artfctdef.ecg.feedback = 'no';
-%   cfg.artfctdef.ecg.channel = 'EEG059';
-%   cfg.artfctdef.ecg.inspect = 'EEG059'; %Nx1 list of channels which will be shown in a QRS-locked average
-%   [cfg, artifact] = ft_artifact_ecg(cfg, data_eye);
-%   netdur = sum(cellfun(@length, data_eye.time)) / data_eye.fsample / 60;
-%   bpm(irun,1) = length(artifact) / netdur;
+  if irun < length(runlist)+1
+    ddmmat_runs = [ddmmat_runs; ddmmat];
+    trl_runs = [trl_runs; trl];
+  end
+  %   disp 'get heartbeats'
+  %   cfg=[];
+  %   cfg.continuous = 'no';
+  %   cfg.artfctdef.ecg.feedback = 'no';
+  %   cfg.artfctdef.ecg.channel = 'EEG059';
+  %   cfg.artfctdef.ecg.inspect = 'EEG059'; %Nx1 list of channels which will be shown in a QRS-locked average
+  %   [cfg, artifact] = ft_artifact_ecg(cfg, data_eye);
+  %   netdur = sum(cellfun(@length, data_eye.time)) / data_eye.fsample / 60;
+  %   bpm(irun,1) = length(artifact) / netdur;
   
   %%
   disp 'Detecting heartbeats . . .' % updated to address 1 funny subject

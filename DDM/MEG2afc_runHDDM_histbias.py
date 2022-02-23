@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct  8 21:44:05 2016
+conda activate hddm_env
+ipcluster start
+spyder
 
 @author: kloosterman
 """

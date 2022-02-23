@@ -120,7 +120,7 @@ if saveddm_mat
     ddmmat = vertcat(behav(isub,:,:).ddmmat_runs);
     ddmmat = ddmmat(:,2:end); % drop subj index col
     ddmmat(:,8) = ddmmat(:,8) - 1; % let it range from 0-X
-    outfile = sprintf('subj%d_ddmdat.csv', isub);
+    outfile = sprintf('subj%d_ddmdat.csv', isub-1);
     outdir = fullfile(PREOUT, 'HDDM');
     mkdir(outdir)
     outpath = fullfile(outdir, outfile);
@@ -263,6 +263,71 @@ for imodel = 1:length(model_names)
     behavior.(model_name).histshift_dc = behavior.(model_name).dc(:,:,:,:,2) - behavior.(model_name).dc(:,:,:,:,1); % histshift = prevR-prevL
   end
 end
+
+%% within-subject HDDM
+disp 'load ddm fits basic within-subject HDDM model runs'
+model_names = {'withinsubj_HDDM' }; % chi_accuracy_basic_runs
+pars = {'a' 't' 'v' }; % 'z' 'dc'
+drugs = {'atx', 'plac'};
+ses = {'contra', 'ipsi'};
+diffs = {'easy' 'hard'};
+prevresps = {'Lprev' 'Rprev'};
+ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/behav/HDDM';
+for imodel = 1:length(model_names)
+  model_name = model_names{imodel};
+  behavior.(model_name) = [];
+  behavior.(model_name).dimord = 'subj_runs_drug_motor_difforprevresp';
+  isub=0;
+  for subind = SUBJ_idx
+    isub=isub+1;
+    ddmfit = readtable(fullfile(ddmpath, sprintf('subj%d_ddmparams.csv', subind) ));
+    varnames = ddmfit.Properties.VariableNames';
+    for ipar = 1:length(pars)
+      for idrug = 1:2
+        for ises = 1:2
+          cols = startsWith(varnames, pars{ipar}) & contains(varnames, drugs{idrug}) ...
+            & contains(varnames, ses{ises}) & ~contains(varnames, 'trans');
+          if ~any(cols); continue;  end
+          if any(contains(varnames(cols), 'easy')) %  easy vs hard (v)
+            allcols = cols;
+            for idiff=1:2 % put diff dim last
+              temp = NaN(1,8);
+              cols = allcols & contains(varnames, diffs{idiff});
+              temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
+              behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises,idiff) = temp;
+            end
+          elseif any(contains(varnames(cols), 'prev')) %  easy vs hard (v)
+            allcols = cols;
+            for iprev=1:2 % put prevresp dim last
+              temp = NaN(1,8);
+              cols = allcols & contains(varnames, prevresps{iprev});
+              temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
+              behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises,iprev) = temp;
+            end
+          else % no diff or prevResp
+            temp = NaN(1,8);
+            temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
+            behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises) = temp;
+          end
+        end
+      end
+      if isfield(behavior.(model_name), pars{ipar})
+        behavior.(model_name).(pars{ipar})(isub,9,:,:,:) = nanmean(behavior.(model_name).(pars{ipar})(isub,:,:,:,:),2);
+        behavior.(model_name).(pars{ipar})(isub,:,3,:,:) = mean(behavior.(model_name).(pars{ipar})(isub,:,:,:,:),3);
+        behavior.(model_name).(pars{ipar})(isub,:,:,3,:) = mean(behavior.(model_name).(pars{ipar})(isub,:,:,:,:),4);
+        behavior.(model_name).(pars{ipar})(isub,:,:,:,3) = mean(behavior.(model_name).(pars{ipar})(isub,:,:,:,:),5);
+        behavior.(model_name).(pars{ipar})(isub,:,4,:,:) = behavior.(model_name).(pars{ipar})(isub,:,1,:,:) - behavior.(model_name).(pars{ipar})(isub,:,2,:,:);
+        behavior.(model_name).(pars{ipar})(isub,:,:,4,:) = behavior.(model_name).(pars{ipar})(isub,:,:,1,:) - behavior.(model_name).(pars{ipar})(isub,:,:,2,:);
+        behavior.(model_name).(pars{ipar})(isub,:,:,:,4) = behavior.(model_name).(pars{ipar})(isub,:,:,:,1) - behavior.(model_name).(pars{ipar})(isub,:,:,:,2);
+      end
+    end
+  end
+  if strcmp(model_name, 'chi_prevresp_z_dc_runs')
+    behavior.(model_name).histshift_z = behavior.(model_name).z(:,:,:,:,2) - behavior.(model_name).z(:,:,:,:,1); % histshift = prevR-prevL
+    behavior.(model_name).histshift_dc = behavior.(model_name).dc(:,:,:,:,2) - behavior.(model_name).dc(:,:,:,:,1); % histshift = prevR-prevL
+  end
+end
+
 
 
 %%
