@@ -83,7 +83,7 @@ for isub in subj:
         'v': ['drug', 'simon', 'difficulty']})
         
         m.find_starting_values()
-        m.sample(1000,500)
+        m.sample(5000,2000)
         
         test = m.gen_stats()
         test.to_csv('subj%d_ddmparams.csv' % isub )  # './subj%d_ddmdat.csv' % isub)

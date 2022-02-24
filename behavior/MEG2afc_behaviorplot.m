@@ -5,11 +5,12 @@ SAV=1;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 % behavnames = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd'}; % 5D matrices
 behavnames = {
-  {'dprime'};  { 'ntrials' }; %{'criterion'};  { 'RT'} ;{ 'RTsd' };
+  {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' }; % { 'ntrials' };
 %   {'basepupil' } ;{'bpm'};  { 'p_repeatbalanced'};  {'p_repeatunbalanced' }; {'button_bias'};
-  
-%   %   {'chi_accuracy_basic_nomotor' 'v'}; {'chi_accuracy_basic_nomotor' 'a'}; {'chi_accuracy_basic_nomotor' 't'};  {};  {};
-%   %   {'chi_accuracy_basic' 'v'}; {'chi_accuracy_basic' 'a'}; {'chi_accuracy_basic' 't'}; {}; {};
+%     {'withinsubj_HDDM' 'v'}; {'withinsubj_HDDM' 'a'}; {'withinsubj_HDDM' 't'};  {};  {};
+
+  %   %   {'chi_accuracy_basic_nomotor' 'v'}; {'chi_accuracy_basic_nomotor' 'a'}; {'chi_accuracy_basic_nomotor' 't'};  {};  {};
+%     {'chi_accuracy_basic' 'v'}; {'chi_accuracy_basic' 'a'}; {'chi_accuracy_basic' 't'}; {}; {};
 %   {'ddm_acc_perrun' 'v'}; {'ddm_acc_perrun' 'a'}; {'ddm_acc_perrun' 't'}; {}; {};
 %   {'ddm_acc_perrun_ol' 'v'}; {'ddm_acc_perrun_ol' 'a'}; {'ddm_acc_perrun_ol' 't'}; {}; {};
 %   %   {'chi_accuracy_basic_runs' 'v'}; {'chi_accuracy_basic_runs' 'a'}; {'chi_accuracy_basic_runs' 't'}; {}; {};
@@ -22,19 +23,19 @@ behavnames = {
 %   %   {'ddm_histbias_perses' 'v'};{'ddm_histbias_perses' 'a'}; {'ddm_histbias_perses' 't'}; {'ddm_histbias_perses' 'histshift_dc'}; {'ddm_histbias_perses' 'histshift_z'};
   }; % all matrices
 close all
-nrow=8; ncol=6;
+nrow=8; ncol=5;
 diffleg = {'strong', 'weak', ''};
 
 avgtypestr = {'averaged' 'together'}; % runs averaged or taken together
 f = figure; iplot=0;
-for ia = 1:2
+for ia = 1%:2
   if strcmp(avgtypestr{ia}, 'averaged') % computed once collapsed over runs (9), or averaged over runs (10)
     avgtype = 10;
   elseif strcmp(avgtypestr{ia}, 'together') % computed once collapsed over runs (9), or averaged over runs (10)
     avgtype = 9;
   end
   
-  for idiff=1:3
+  for idiff=3
     Fontsize = 6;
     f.Position =[   680   467   85*ncol   100*nrow];
     for im = 1:length(behavnames)

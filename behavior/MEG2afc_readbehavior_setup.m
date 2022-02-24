@@ -8,8 +8,8 @@ if ismac
   compile = 'no';
 else
   basepath = '/home/mpib/kloosterman/projectdata/MEG2afc/'; %yesno or 2afc
-      backend = 'slurm';
-%   backend = 'torque';
+  backend = 'slurm';
+  %   backend = 'torque';
   %       backend = 'local';
   %   compile = 'yes';
   compile = 'no';
@@ -18,19 +18,19 @@ timreq = 5; %in minutes per run
 memreq = 3000; % in MB
 
 PREIN = fullfile(basepath, 'preproczap');
-PREOUT = fullfile(basepath, 'behav');  
+PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
-saveddm_mat = 0; % save csv for hddm 
-runontardis = 1; % run it or load behav per session from file
+saveddm_mat = 0; % save csv for hddm
+runontardis = 0; % run it or load behav per session from file
 
-% subject issues: 
+% subject issues:
 % NK1: high d' (pilot)  KEEP
 % NK2: session missing (fixable??) KEEP
 % NK10: bad DDM fits (weird RT distributions, outlier driftbias) DROP
 
 SUBJ = [1:5, 7:9, 11:21]; % all
-% SUBJ = [2]; % 
+% SUBJ = [2]; %
 SUBJ_idx= [0:18]; % corresponding Python counting
 % SUBJ_idx=1;
 % SUBJ= [1, 3:5, 7:9, 11:21]; % drop NK2, misses session
@@ -50,7 +50,7 @@ cfg.PREOUT = PREOUT;
 cfglist = {};
 for isub = 1:nsub
   for idrug = 1:2
-    for ises = 1:2      
+    for ises = 1:2
       cfg.PREIN = PREIN;
       cfg.SUBJ = sprintf('NK%d', SUBJ(isub));
       cfg.PREOUT = PREOUT;
@@ -62,7 +62,7 @@ for isub = 1:nsub
       else
         try
           temp = load(cfg.outfile);
-        catch 
+        catch
           fprintf('%s not found\n', cfg.outfile)
           continue
         end
@@ -202,13 +202,13 @@ for imodel = 1:length(model_names)
     for idrug = 1:2
       for ises = 1:2
         warning off
-        try          
+        try
           ddmfit = readtable(fullfile(ddmpath, sprintf('params_%s_subj%d_%s_%s.csv', model_name, subind, drugs{idrug}, ses{ises}) ));
         end
         warning on
         varnames = ddmfit.Properties.VariableNames';
         for ipar = 1:length(pars)
-%           behavior.(model_name).(pars{ipar})(isub,1:9,1:4,1:4) = NaN(1,9,4,4);
+          %           behavior.(model_name).(pars{ipar})(isub,1:9,1:4,1:4) = NaN(1,9,4,4);
           cols = startsWith(varnames, pars{ipar}) & ~contains(varnames, 'trans'); % & contains(varnames, drugs{idrug}) & contains(varnames, ses{ises})
           if ~any(cols); continue;  end
           if any(contains(varnames(cols), 'easy')) %  easy vs hard (v)
@@ -222,7 +222,7 @@ for imodel = 1:length(model_names)
             end
           elseif any(contains(varnames(cols), 'prev'))
             allcols = cols;
-            for iprev=1:2 % put prevresp dim last    
+            for iprev=1:2 % put prevresp dim last
               cols = allcols & contains(varnames, prevresps{iprev});
               dat = table2array(ddmfit(:,cols));
               temp = NaN(1,8);
@@ -276,39 +276,26 @@ ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/behav/HDDM';
 for imodel = 1:length(model_names)
   model_name = model_names{imodel};
   behavior.(model_name) = [];
-  behavior.(model_name).dimord = 'subj_runs_drug_motor_difforprevresp';
+  behavior.(model_name).dimord = 'subj_runs_drug_motor_diff';
   isub=0;
   for subind = SUBJ_idx
     isub=isub+1;
     ddmfit = readtable(fullfile(ddmpath, sprintf('subj%d_ddmparams.csv', subind) ));
-    varnames = ddmfit.Properties.VariableNames';
+    
     for ipar = 1:length(pars)
       for idrug = 1:2
         for ises = 1:2
-          cols = startsWith(varnames, pars{ipar}) & contains(varnames, drugs{idrug}) ...
-            & contains(varnames, ses{ises}) & ~contains(varnames, 'trans');
-          if ~any(cols); continue;  end
-          if any(contains(varnames(cols), 'easy')) %  easy vs hard (v)
-            allcols = cols;
-            for idiff=1:2 % put diff dim last
-              temp = NaN(1,8);
-              cols = allcols & contains(varnames, diffs{idiff});
-              temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
-              behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises,idiff) = temp;
-            end
-          elseif any(contains(varnames(cols), 'prev')) %  easy vs hard (v)
-            allcols = cols;
-            for iprev=1:2 % put prevresp dim last
-              temp = NaN(1,8);
-              cols = allcols & contains(varnames, prevresps{iprev});
-              temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
-              behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises,iprev) = temp;
-            end
-          else % no diff or prevResp
-            temp = NaN(1,8);
-            temp(1,1:length(find(cols))) = table2array(ddmfit(1,cols));
-            behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises) = temp;
+          for idiff=1:2 % put diff dim last
+            
+            ddmstr = sprintf('%s_subj(%s.%s.%s).',  pars{ipar}, diffs{idiff}, drugs{idrug}, ses{ises});
+            line_inds = contains(ddmfit.Var1, ddmstr);
+            
+            temp = NaN(8,1);
+            temp(1:length(find(line_inds)),1) = ddmfit.mean(line_inds,:);
+            behavior.(model_name).(pars{ipar})(isub,1:8,idrug,ises,idiff) = temp;
           end
+          
+          if ~any(line_inds); warning('No data found'); continue;  end
         end
       end
       if isfield(behavior.(model_name), pars{ipar})
@@ -322,10 +309,6 @@ for imodel = 1:length(model_names)
       end
     end
   end
-  if strcmp(model_name, 'chi_prevresp_z_dc_runs')
-    behavior.(model_name).histshift_z = behavior.(model_name).z(:,:,:,:,2) - behavior.(model_name).z(:,:,:,:,1); % histshift = prevR-prevL
-    behavior.(model_name).histshift_dc = behavior.(model_name).dc(:,:,:,:,2) - behavior.(model_name).dc(:,:,:,:,1); % histshift = prevR-prevL
-  end
 end
 
 
@@ -338,7 +321,7 @@ end
 % ses = {'contra', 'ipsi'};
 % diffs = {'easy' 'hard'};
 % prevresps = {'Lprev' 'Rprev'};
-% 
+%
 % for imodel = 1:length(model_names)
 %   model_name = model_names{imodel};
 %   behavior.(model_name) = [];
@@ -393,7 +376,7 @@ end
 %     behavior.(model_name).histshift_dc = behavior.(model_name).dc(:,:,:,:,2) - behavior.(model_name).dc(:,:,:,:,1); % histshift = prevR-prevL
 %   end
 % end
-% 
+%
 % %%
 % disp 'load ddm fits computed per session'
 % model_names = {'chi_accuracy_basic' 'chi_prevresp_z_dc'};
@@ -424,7 +407,7 @@ end
 %             cols = allcols & contains(varnames, prevresps{iprev});
 %             behavior.(model_name).(pars{ipar})(:,1,idrug,ises,iprev) = table2array(ddmfit(:,cols));
 %           end
-%         else % no diff or prevResp         
+%         else % no diff or prevResp
 %           behavior.(model_name).(pars{ipar})(:,1,idrug,ises) = table2array(ddmfit(:,cols));
 %         end
 %       end
@@ -444,10 +427,10 @@ end
 %     behavior.(model_name).histshift_dc = behavior.(model_name).dc(:,:,:,:,2) - behavior.(model_name).dc(:,:,:,:,1); % histshift = prevR-prevL
 %   end
 % end
-% 
+%
 % %%
 % disp 'load ddm fits only 1 ses: collapsed over motor'
-% model_names = { 'chi_prevresp_z_dc_nomotor' 'chi_accuracy_basic_nomotor'}; 
+% model_names = { 'chi_prevresp_z_dc_nomotor' 'chi_accuracy_basic_nomotor'};
 % for imodel = 1:length(model_names)
 %   model_name = model_names{imodel};
 %   behavior.(model_name) = [];
@@ -475,7 +458,7 @@ end
 %             cols = allcols & contains(varnames, prevresps{iprev});
 %             behavior.(model_name).(pars{ipar})(:,1,idrug,ises,iprev) = table2array(ddmfit(:,cols));
 %           end
-%         else % no diff or prevResp         
+%         else % no diff or prevResp
 %           behavior.(model_name).(pars{ipar})(:,1,idrug,ises) = table2array(ddmfit(:,cols));
 %         end
 %       end
@@ -505,19 +488,19 @@ save(fullfile(PREOUT, 'behavstruct.mat'), 'behavior')
 
 
 
-%% tryout plot 
+%% tryout plot
 % % close all
 % if ismac
 % %   datsel = squeeze(behavior.p_repeat.balanced(:,9,[1:2,4],3,3))
 % %   datsel = squeeze(behavior.p_repeat.unbalanced(:,9,[1:2,4],3))
 %   datsel = squeeze(behavior.button_bias(:,9,[1:2,4],3,1))-0.5
 %   figure;  bar(nanmean(datsel));
-%   
+%
 % %   ylim([0.46 0.62])
 %   [~,p] = ttest(datsel(:,1)-0.5)
 %   [~,p] = ttest(datsel(:,2)-0.5)
 %   [~,p] = ttest(datsel(:,1), datsel(:,2)); title(p)
-%   
+%
 %   hold on
 %   plotdata = cell(1,2);
 %   plotdata{1,1} = datsel(:,1);
@@ -558,7 +541,7 @@ save(fullfile(PREOUT, 'behavstruct.mat'), 'behavior')
 % p_rep = squeeze(nanmean(behavior.p_repeat,2));
 % p_rep = squeeze(mean(p_rep,3));
 % p_rep = p_rep(:,1) - p_rep(:,2);
-% 
+%
 % % corrdat = [behavior.p_repeat(:) histshift(:)];
 % corrdat = [p_rep(:) histshift(:)];
 % corrdat = corrdat(~isnan(corrdat(:,1)),:)
@@ -566,6 +549,6 @@ save(fullfile(PREOUT, 'behavstruct.mat'), 'behavior')
 % r = corr(corrdat(:,1), corrdat(:,2));
 % figure; scatter(corrdat(:,1), corrdat(:,2)); title(r)
 % axis tight; box on
-% 
+%
 
 
