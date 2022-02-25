@@ -112,9 +112,8 @@ makezscore = false;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 condcol = {'r' 'b'};
 behavnames = {
-  {'basepupil' } ;{'bpm'}; {'ntrials'};
-      {'dprime'};  
-% { 'RT'} ;
+  {'basepupil' } ;{'bpm'}; %{'ntrials'};
+      {'dprime'};  {'RT'}; {'criterion'}; { 'p_repeatbalanced'} ;
   
   }; % all matrices
 
@@ -156,8 +155,10 @@ for im = 1:length(behavnames)
     xlabel('Run no.')
     ax=gca;
     ax.FontSize = Fontsize;
+    ax.XTick = 1:6;
+    ax.XLim = [0.5 6.5];
     if im == 2
-      legend([h.mainLine], condlabels); legend boxoff
+      legend([h.mainLine], condlabels, 'Location', 'East'); legend boxoff
     end
   end
 end
