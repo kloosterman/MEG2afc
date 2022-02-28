@@ -17,7 +17,7 @@ end
 timreq = 5; %in minutes per run
 memreq = 3000; % in MB
 
-PREIN = fullfile(basepath, 'preproczap');
+PREIN = fullfile(basepath, 'preproczapline-plus');
 PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
