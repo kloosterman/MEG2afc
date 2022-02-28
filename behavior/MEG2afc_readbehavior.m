@@ -171,25 +171,41 @@ for irun = 1:length(runlist)+1
   %   netdur = sum(cellfun(@length, data_eye.time)) / data_eye.fsample / 60;
   %   bpm(irun,1) = length(artifact) / netdur;
   
-  %%
-  disp 'Detecting heartbeats . . .' % updated to address 1 funny subject
-  cfg=[];
-%   cfg.trl = [(data_eye.fsample*3) length(data_eye.trial{1})-(data_eye.fsample*3) 0];
-  cfg.continuous = 'no';
-  cfg.artfctdef.ecg.channel = {'EEG059'};
-  if ismac
-    cfg.artfctdef.ecg.feedback = 'no';
-  else
-    cfg.artfctdef.ecg.feedback = 'no';
+  %% Get heartrate from epoched or continous data (as done in MEG2afc_preproc)
+  getHRfrom ='continous'; %{'epoched' 'continous'};
+  switch getHRfrom
+    case 'epoched'
+      disp 'Detecting heartbeats . . .' % updated to address 1 funny subject
+      cfg=[];
+      %   cfg.trl = [(data_eye.fsample*3) length(data_eye.trial{1})-(data_eye.fsample*3) 0];
+      cfg.continuous = 'no';
+      cfg.artfctdef.ecg.channel = {'EEG059'};
+      if ismac
+        cfg.artfctdef.ecg.feedback = 'no';
+      else
+        cfg.artfctdef.ecg.feedback = 'no';
+      end
+      cfg.artfctdef.ecg.inspect = 'EEG059';
+      [cfg_heartbeats, heartbeats] = ft_artifact_ecg(cfg, data_eye);
+      
+      cfg_heartbeats.heartbeats = heartbeats;
+      inter_beat_durs = diff(heartbeats(:,1)) / data_eye.fsample; % in sec
+      inter_beat_durs = inter_beat_durs(zscore(inter_beat_durs) < 3); % remove outlier durs, indicates ECG is loose
+      bpm(irun,1) = length(inter_beat_durs) / (sum(inter_beat_durs)/60);
+      cfg_heartbeats.bpm = bpm;
+    case 'continous'
+      disp 'Loading heartbeats . . .' % updated to address 1 funny subject
+      path = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/preproczapline-plus/heartbeats';
+      if irun < length(runlist)+1
+        load(fullfile(path, [runlist(irun).name(1:end-12) '.mat'])) % cfg_heartbeats comes out
+        bpm(irun,1) = cfg_heartbeats.bpm;
+      else
+        bpm(irun,1) = nanmean(bpm); % avg over runs
+      end
+      
+      
   end
-  cfg.artfctdef.ecg.inspect = 'EEG059';
-  [cfg_heartbeats, heartbeats] = ft_artifact_ecg(cfg, data_eye);
   
-  cfg_heartbeats.heartbeats = heartbeats;
-  inter_beat_durs = diff(heartbeats(:,1)) / data_eye.fsample; % in sec
-  inter_beat_durs = inter_beat_durs(zscore(inter_beat_durs) < 3); % remove outlier durs, indicates ECG is loose
-  bpm(irun,1) = length(inter_beat_durs) / (sum(inter_beat_durs)/60);
-  cfg_heartbeats.bpm = bpm;
 
   %%
   disp 'get baseline pupil'

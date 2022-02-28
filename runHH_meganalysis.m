@@ -14,7 +14,8 @@ else
 end
 % addpath(genpath(fullfile(basepath, 'MEG_HH_analysis')))
 % rmpath(genpath(fullfile(basepath, 'MEG_HH_analysis/.git/')))
-addpath(genpath_exclude(fullfile(basepath, 'MEG2afc'), {'\.git'} ))
+% addpath(genpath_exclude(fullfile(basepath, 'MEG2afc'), {'\.git'} ))
+addpath(genpath(fullfile(basepath, 'MEG2afc')))
 
 % addpath(fullfile(basepath, 'tools', 'fieldtrip-20170611')) %inc JJ edit ft_artifact_zvalue
 addpath(fullfile(basepath, 'fieldtrip')) % cloned on 13 09 19
