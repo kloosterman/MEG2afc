@@ -195,7 +195,11 @@ for irun = 1:length(runlist)+1
       cfg_heartbeats.bpm = bpm;
     case 'continous'
       disp 'Loading heartbeats . . .' % updated to address 1 funny subject
-      path = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/preproczapline-plus/heartbeats';
+      if ismac
+        path = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/preproczapline-plus/heartbeats';
+      else
+        path = '/home/mpib/kloosterman/projectdata/MEG2afc/preproczapline-plus/heartbeats';
+      end
       if irun < length(runlist)+1
         load(fullfile(path, [runlist(irun).name(1:end-12) '.mat'])) % cfg_heartbeats comes out
         bpm(irun,1) = cfg_heartbeats.bpm;
