@@ -5,7 +5,7 @@ SAV=1;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 % behavnames = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd'}; % 5D matrices
 behavnames = {
-  {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' }; % { 'ntrials' };
+  {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' };{ 'bpm' }; % { 'ntrials' };
 %   {'basepupil' } ;{'bpm'};  { 'p_repeatbalanced'};  {'p_repeatunbalanced' }; {'button_bias'};
 %     {'withinsubj_HDDM' 'v'}; {'withinsubj_HDDM' 'a'}; {'withinsubj_HDDM' 't'};  {};  {};
 
@@ -107,13 +107,15 @@ if SAV
 end
 
 %% plot bpm and pupil over runs to see how it progresses
+% TODO add stats
 SAV=1;
 makezscore = false;
 condlabels = {'ATX' 'plac'}; % TODO put in b struct
 condcol = {'r' 'b'};
 behavnames = {
-  {'basepupil' } ;{'bpm'}; %{'ntrials'};
-      {'dprime'};  {'RT'}; {'criterion'}; { 'p_repeatbalanced'} ;
+  {'basepupil' } ;
+  {'bpm'}; %{'ntrials'};
+  {'dprime'};  {'RT'}; {'criterion'}; { 'p_repeatbalanced'} ;
   
   }; % all matrices
 
@@ -145,11 +147,25 @@ for im = 1:length(behavnames)
     end
     subplot(nrow,ncol,iplot); hold on; % axis tight
     
+    % rmanova
+    t = table(data(:,1,1), data(:,2,1), data(:,3,1), data(:,4,1), data(:,5,1), data(:,6,1), ...
+      data(:,1,2), data(:,2,2), data(:,3,2), data(:,4,2), data(:,5,2), data(:,6,2), ...
+      'VariableNames', {'atx1', 'atx2', 'atx3', 'atx4', 'atx5', 'atx6', ...
+      'plac1', 'plac2', 'plac3', 'plac4', 'plac5', 'plac6'});
+    
+    withinDesign = table([1 1 1 1 1 1 2 2 2 2 2 2]',[1 2 3 4 5 6 1 2 3 4 5 6 ]','VariableNames',{'Drug' 'Time'});
+    withinDesign.Drug = categorical(withinDesign.Drug);
+    withinDesign.Time = categorical(withinDesign.Time);
+    
+    rmodel = fitrm(t,'atx1-plac6 ~ 1','WithinDesign',withinDesign);
+    [ranovatab] = ranova(rmodel,'WithinModel','Drug*Time')
+    
+    
     clear h
     for idrug=1:2
       %       plot(data(:,:,idrug)') %, Fontsize, condlabels, b.SUBJ);
       %       plot(squeeze(nanmean(data))) %, 'k', 'Linewidth', 2) %, Fontsize, condlabels, b.SUBJ);
-      h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 1 )
+      h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 1 );
     end
     title(behavnames{im}, 'Fontsize', Fontsize-1)
     xlabel('Run no.')
