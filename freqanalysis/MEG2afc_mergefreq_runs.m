@@ -1,10 +1,10 @@
-function [freq_subj] = MEG2afc_mergefreq_runs(  )
+% function [freq_subj] = MEG2afc_mergefreq_runs(  )
 %UNTITLED6 Summary of this function goes here
 %   BLC = baseline correction: raw or BLC
 
-if nargin == 0
-  baseline = 'alreadynormalized'; % BLC
-end
+% if nargin == 0
+%   baseline = 'alreadynormalized'; % BLC
+% end
 
 if ismac
   basepath = '/Users/kloosterman/gridmaster2012/projectdata/MEG2afc/'; %yesno or 2afc kloosterman
@@ -88,11 +88,15 @@ for isub = 1:nsub
     % add behavior: DDM pars
     b=behavior.ddm_histbias_perrun;
     isub2 = find(SUBJ(isub) == behavior.SUBJ); % index of subject in ddm file
-    freq_ses{is}.trialinfo(:,1) = squeeze(b.v(isub2, 1:nruns, 1, is) - b.v(isub2, 1:nruns, 2, is, 3)); % dimord: 'subj_runs_drug_motor_diffodatselrevresp'
-    freq_ses{is}.trialinfo(:,2) = squeeze(b.a(isub2, 1:nruns, 1, is) - b.a(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_diffodatselrevresp'
-    freq_ses{is}.trialinfo(:,3) = squeeze(b.t(isub2, 1:nruns, 1, is) - b.t(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_diffodatselrevresp'
-    freq_ses{is}.trialinfo(:,4) = squeeze(b.histshift_dc(isub2, 1:nruns, 1, is) - b.histshift_dc(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_diffodatselrevresp'
-    freq_ses{is}.trialinfo(:,5) = squeeze(b.histshift_z(isub2, 1:nruns, 1, is) - b.histshift_z(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_diffodatselrevresp'
+%     freq_ses{is}.trialinfo(:,1) = squeeze(b.v(isub2, 1:nruns, 1, is) - b.v(isub2, 1:nruns, 2, is, 3)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    freq_ses{is}.trialinfo(:,1) = squeeze(b.v(isub2, 1:nruns, 1, is, 3) - b.v(isub2, 1:nruns, 2, is, 3)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    freq_ses{is}.trialinfo(:,2) = squeeze(b.a(isub2, 1:nruns, 1, is) - b.a(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    freq_ses{is}.trialinfo(:,3) = squeeze(b.t(isub2, 1:nruns, 1, is) - b.t(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    freq_ses{is}.trialinfo(:,4) = squeeze(b.histshift_dc(isub2, 1:nruns, 1, is) - b.histshift_dc(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    freq_ses{is}.trialinfo(:,5) = squeeze(b.histshift_z(isub2, 1:nruns, 1, is) - b.histshift_z(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_difforprevresp'
+    
+    freq_ses{is}.trialinfo(:,6) = behavior.dprime(isub2, 1:nruns, 1, is, 3) - behavior.dprime(isub2, 1:nruns, 2, is, 3);
+    
     if any(any(isnan(freq_ses{is}.trialinfo)))
       disp('nan found')
     end
@@ -152,7 +156,7 @@ cfg0_neighb.method    = 'template';
 cfg0_neighb.template  = 'ctf275_neighb.mat';
 neighbours       = ft_prepare_neighbours(cfg0_neighb);
 
-ibehav = 1;
+ibehav = 6;
 cfg = [];
 cfg.design           = freq_subj.trialinfo(:,ibehav);
 cfg.uvar     = [];
@@ -229,6 +233,7 @@ end
 
 %%
 disp('break up parts again')
+latencies = [-0.1 0.15; -0.45 0.25];
 for itrig=1:2
   for ifreq = 1:2
     cfg=[];
@@ -270,7 +275,7 @@ f = figure;   f.Position = [ 680          75         612        792 ]; % A4 form
 irow = 0;
 % imod = 2; idrug = 4; idiff = 3;
 for imod = 1 %1:4
-  for ibehav = 1:size(megdat.corrstat,2)
+  for ibehav = 6 %1:size(megdat.corrstat,2)
     
     cfg=[];
     cfg.clus2plot = 1; 

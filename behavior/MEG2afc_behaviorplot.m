@@ -110,17 +110,20 @@ end
 % TODO add stats
 SAV=1;
 makezscore = false;
-condlabels = {'ATX' 'plac'}; % TODO put in b struct
-condcol = {'r' 'b'};
+condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
+condcol = {'r' 'b' 'k' 'k'};
 behavnames = {
-  {'basepupil' } ;
-  {'bpm'}; %{'ntrials'};
-  {'dprime'};  {'RT'}; {'criterion'}; { 'p_repeatbalanced'} ;
-  
+  {'basepupil' } ;  {'bpm'}; %{'ntrials'};
+  {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
   }; % all matrices
+% ylabelnames = {
+%   {'a.u.' } ;  {'beats/min'}; %{'ntrials'};
+%   {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
+%   }; % all matrices
+
 
 close all
-nrow=4; ncol=2;
+nrow=4; ncol=4;
 f = figure; iplot=0;
 Fontsize = 6;
 f.Position =[   680   467   85*ncol   100*nrow];
@@ -129,23 +132,41 @@ for im = 1:length(behavnames)
     continue;
   end
   curb = getfield(b, behavnames{im}{:});
+  
   for ises = 3
-    iplot=iplot+1;
     if length(size(curb)) == 5
       if strcmp(behavnames{im}{1}, 'button_bias')
-        data = squeeze(curb(:,1:6, 1:2, ises, 1));  % pick left bp
+        data = squeeze(curb(:,1:6, 1:4, ises, 1));  % pick left bp
       else
-        data = squeeze(curb(:,1:6, 1:2, ises, 3));  % dims: subj runs drug motor diff
+        data = squeeze(curb(:,1:6, 1:4, ises, 3));  % dims: subj runs drug motor diff
       end
     elseif length(size(curb)) == 4
-      data = squeeze(curb(:,1:6, 1:2, ises));  % dims: subj runs drug motor
+      data = squeeze(curb(:,1:6, 1:4, ises));  % dims: subj runs drug motor
     end
     if makezscore
       data = data(:,:);
       data = (data - nanmean(data,2)) ./ nanstd(data,0,2);
       data = reshape(data, size(data,1), 6, 2);
     end
-    subplot(nrow,ncol,iplot); hold on; % axis tight
+
+    conds2plot = {1:2, 4};
+    for ic = 1:2
+      iplot=iplot+1;
+      subplot(nrow,ncol,iplot); hold on; % axis tight
+      clear h
+      for idrug= conds2plot{ic}
+        h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 0 );
+      end
+      title(behavnames{im}, 'Fontsize', Fontsize-1)
+      xlabel('Run no.')
+      ax=gca;
+      ax.FontSize = Fontsize;
+      ax.XTick = 1:6;
+      ax.XLim = [0.5 6.5];
+      if im == 2
+        legend([h.mainLine], condlabels{conds2plot{ic}}, 'Location', 'North'); legend boxoff
+      end
+    end
     
     % rmanova
     t = table(data(:,1,1), data(:,2,1), data(:,3,1), data(:,4,1), data(:,5,1), data(:,6,1), ...
@@ -159,23 +180,8 @@ for im = 1:length(behavnames)
     
     rmodel = fitrm(t,'atx1-plac6 ~ 1','WithinDesign',withinDesign);
     [ranovatab] = ranova(rmodel,'WithinModel','Drug*Time')
+
     
-    
-    clear h
-    for idrug=1:2
-      %       plot(data(:,:,idrug)') %, Fontsize, condlabels, b.SUBJ);
-      %       plot(squeeze(nanmean(data))) %, 'k', 'Linewidth', 2) %, Fontsize, condlabels, b.SUBJ);
-      h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 1 );
-    end
-    title(behavnames{im}, 'Fontsize', Fontsize-1)
-    xlabel('Run no.')
-    ax=gca;
-    ax.FontSize = Fontsize;
-    ax.XTick = 1:6;
-    ax.XLim = [0.5 6.5];
-    if im == 2
-      legend([h.mainLine], condlabels, 'Location', 'East'); legend boxoff
-    end
   end
 end
 if SAV

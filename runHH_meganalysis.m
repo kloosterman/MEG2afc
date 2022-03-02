@@ -54,6 +54,9 @@ addpath(fullfile(basepath, 'qsub-tardis')) %inc JJ edit ft_artifact_zvalue
 %% freqanalysis
 % MEG2afc_freq_setup()
 
+%% load single run data for rmcorr
+freq_subj = MEG2afc_mergefreq_runs()
+
 %% load and combine freqs of sessions
 % [megdat] = MEG2afc_mergefreq( 'BLC' ); % 'raw' or BLC, TODO get both, will fit
 
