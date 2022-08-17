@@ -112,10 +112,12 @@ SAV=1;
 makezscore = false;
 condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
 condcol = {'r' 'b' 'k' 'k'};
-behavnames = {
-  {'basepupil' } ;  {'bpm'}; %{'ntrials'};
-  {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
-  }; % all matrices
+behavnames = {  {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
+
+% behavnames = {
+%   {'basepupil' } ;  {'bpm'}; %{'ntrials'};
+%   {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
+%   }; % all matrices
 % ylabelnames = {
 %   {'a.u.' } ;  {'beats/min'}; %{'ntrials'};
 %   {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
