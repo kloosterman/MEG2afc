@@ -156,18 +156,23 @@ for im = 1:length(behavnames)
       iplot=iplot+1;
       subplot(nrow,ncol,iplot); hold on; % axis tight
       clear h
-      for idrug= conds2plot{ic}
-        h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 0 );
+      if conds2plot{ic} == 4 
+        plot( squeeze(data(:,:,conds2plot{ic}))', 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
+        plot( squeeze(nanmean(data(:,:,conds2plot{ic}))), 'Color', condcol{conds2plot{ic}}, 'Linewidth', 2);
+      else
+        for idrug= conds2plot{ic}
+          h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 0 );
+        end
+        if im == 2
+          legend([h.mainLine], condlabels{conds2plot{ic}}, 'Location', 'North'); legend boxoff
+        end
       end
       title(behavnames{im}, 'Fontsize', Fontsize-1)
-      xlabel('Run no.')
+      xlabel('Block no.')
       ax=gca;
       ax.FontSize = Fontsize;
       ax.XTick = 1:6;
       ax.XLim = [0.5 6.5];
-      if im == 2
-        legend([h.mainLine], condlabels{conds2plot{ic}}, 'Location', 'North'); legend boxoff
-      end
     end
     
     % rmanova

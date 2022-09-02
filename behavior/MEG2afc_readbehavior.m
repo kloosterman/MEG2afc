@@ -33,6 +33,7 @@ p_repeatunbalanced = nan(9,1);
 p_repeatbalanced = nan(9,2);
 button_bias = nan(9,2);
 dprime = nan(9,2); % easy hard
+propcorrect = nan(9,2); % easy hard
 criterion = nan(9,2);
 bpm = nan(9,1);
 basepupil = nan(9,1);
@@ -98,9 +99,11 @@ for irun = 1:length(runlist)+1
     if contains(sesname, 'contra')
       H = sum(stim == 1 & difficulty == idiff & button == 2) / sum(stim == 1 & difficulty == idiff);
       FA = sum(stim == 2 & difficulty == idiff & button == 2) / sum(stim == 2 & difficulty == idiff);
+      propcorrect(irun,idiff) = sum(difficulty == idiff & stim ~= button) / sum(difficulty == idiff);
     else
       H = sum(stim == 1 & difficulty == idiff & button == 1) / sum(stim == 1 & difficulty == idiff);
       FA = sum(stim == 2 & difficulty == idiff & button == 1) / sum(stim == 2 & difficulty == idiff);
+      propcorrect(irun,idiff) = sum(difficulty == idiff & stim == button) / sum(difficulty == idiff);
     end
     if H == 1; H = 0.99; end
     if FA == 0; FA = 0.01; end
@@ -109,10 +112,10 @@ for irun = 1:length(runlist)+1
 %     RTok = zscore(trl(:,8)) < 3; % DROP RT's > 3 sd away 
 %     RT(irun,idiff) = median(trl(difficulty == idiff & RTok,8)) / 1200;
 %     RTsd(irun,idiff) = std(trl(difficulty == idiff & RTok,8)) / 1200;
-    RT(irun,idiff) = median(trl(difficulty == idiff,8)) / 1200; % no drop RTs
+    RT(irun,idiff) = mean(trl(difficulty == idiff,8)) / 1200; % no drop RTs
     RTsd(irun,idiff) = std(trl(difficulty == idiff,8)) / 1200;
     ntrials(irun,idiff) = sum( difficulty == idiff);  % size(trl,1);
-
+    
   end
   
 %   disp 'find out if blink occurred during trial'
@@ -235,6 +238,7 @@ behav.bpm = bpm;
 behav.basepupil = basepupil;
 behav.trl_runs = trl_runs; % just all trials, nothing removed
 behav.ntrials = ntrials;
+behav.propcorrect = propcorrect;
 
 disp(outfile);
 save(outfile, 'behav');
