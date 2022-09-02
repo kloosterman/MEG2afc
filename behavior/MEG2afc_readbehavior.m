@@ -37,6 +37,7 @@ propcorrect = nan(9,2); % easy hard
 criterion = nan(9,2);
 bpm = nan(9,1);
 basepupil = nan(9,1);
+recordingdates = nan(9,1);
 RT= nan(9,2);
 RTsd= nan(9,2);
 ntrials = nan(9,2);
@@ -55,6 +56,11 @@ for irun = 1:length(runlist)+1
     load(runlist(irun).name, 'data_eye'); % only eye data!!
     data_eye.fsample = round(data_eye.fsample); % sometimes slightly off
     datakeep{end+1} = data_eye;
+    datestr = ft_findcfg(data_eye.cfg, 'dataset');
+    strtok = tokenize(datestr, '_');
+    datestr = [strtok{3} '_' strtok{4}(1:end-4)];
+    formatIn = 'yyyy-mm-dd_HH.MM.SS';
+    recordingdates(irun,1) = datenum(datestr, formatIn);
   else
     disp 'compute collapsed over runs'
     data_eye = ft_appenddata([], datakeep{:});
@@ -244,6 +250,7 @@ behav.basepupil = basepupil;
 behav.trl_runs = trl_runs; % just all trials, nothing removed
 behav.ntrials = ntrials;
 behav.propcorrect = propcorrect;
+behav.recordingdates = recordingdates;
 
 disp(outfile);
 save(outfile, 'behav');

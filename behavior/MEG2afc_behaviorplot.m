@@ -113,6 +113,7 @@ makezscore = false;
 condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
 condcol = {'r' 'b' 'k' 'k'};
 behavnames = { {'propcorrect'}; {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
+behavnames = { {'dprime'}; {'RT'}; {'basepupil' } ;  {'bpm'}; };
 
 % behavnames = {
 %   {'basepupil' } ;  {'bpm'}; %{'ntrials'};
@@ -171,6 +172,9 @@ for im = 1:length(behavnames)
         if im == 2
           legend([h.mainLine], condlabels{conds2plot{ic}}, 'Location', 'North'); legend boxoff
         end
+        % plot stats
+        [mask,p] = ttest(data(:,:,1), data(:,:,2));
+        plot_sig_bar(1:6, mask);        
       end
       title(behavnames{im}, 'Fontsize', Fontsize-1)
       xlabel('Block no.')
@@ -191,6 +195,7 @@ for im = 1:length(behavnames)
     withinDesign.Time = categorical(withinDesign.Time);
     
     rmodel = fitrm(t,'atx1-plac6 ~ 1','WithinDesign',withinDesign);
+    disp(behavnames{im}{:})
     [ranovatab] = ranova(rmodel,'WithinModel','Drug*Time')
 
     
