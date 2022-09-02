@@ -22,7 +22,7 @@ PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
 saveddm_mat = 0; % save csv for hddm
-runontardis = 1; % run it or load behav per session from file
+runontardis = 1; % run it or load behav per subject and session from file
 
 % subject issues:
 % NK1: high d' (pilot)  KEEP
@@ -48,7 +48,7 @@ cfg = [];
 cfg.PREIN = PREIN;
 cfg.PREOUT = PREOUT;
 cfglist = {};
-for isub = 1:nsub
+for isub = 4 %1:nsub
   for idrug = 1:2
     for ises = 1:2
       cfg.PREIN = PREIN;
@@ -143,7 +143,7 @@ behavior.SUBJ_idx = SUBJ_idx;
 
 disp 'get bmeas dprime and criterion'; disp 'get RT'
 disp 'get p_repeat separately for L and R repeats'
-bmeas = {'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd' 'ntrials'}; % p_repeatbalanced dim5 is LR
+bmeas = {'propcorrect' 'dprime' 'criterion' 'button_bias' 'p_repeatbalanced' 'RT' 'RTsd' 'ntrials'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
   behavior.(bmeas{im}) = reshape([behav.(bmeas{im})], 9, 2, nsub,2,2); % dims: runs diff subj drug motor
   behavior.(bmeas{im}) = permute(behavior.(bmeas{im}), [3 1 4 5 2]); % dims: subj runs drug motor diff

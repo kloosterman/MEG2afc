@@ -205,7 +205,12 @@ for irun = 1:length(runlist)+1
       end
       if irun < length(runlist)+1
         load(fullfile(path, [runlist(irun).name(1:end-12) '.mat'])) % cfg_heartbeats comes out
-        bpm(irun,1) = cfg_heartbeats.bpm;
+        if cfg_heartbeats.bpm > 45
+          bpm(irun,1) = cfg_heartbeats.bpm;
+        else
+          disp 'BPM recording went wrong!'
+          bpm(irun,1) = NaN;
+        end
       else
         bpm(irun,1) = nanmean(bpm); % avg over runs
       end

@@ -112,7 +112,7 @@ SAV=1;
 makezscore = false;
 condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
 condcol = {'r' 'b' 'k' 'k'};
-behavnames = {  {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
+behavnames = { {'propcorrect'}; {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
 
 % behavnames = {
 %   {'basepupil' } ;  {'bpm'}; %{'ntrials'};
@@ -157,8 +157,10 @@ for im = 1:length(behavnames)
       subplot(nrow,ncol,iplot); hold on; % axis tight
       clear h
       if conds2plot{ic} == 4 
-        plot( squeeze(data(:,:,conds2plot{ic}))', 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
-        plot( squeeze(nanmean(data(:,:,conds2plot{ic}))), 'Color', condcol{conds2plot{ic}}, 'Linewidth', 2);
+        plotdat = squeeze(data(:,:,conds2plot{ic}))';
+        cmap = jet()
+        plot( plotdat, 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
+        plot( nanmean(plotdat), 'Color', condcol{conds2plot{ic}}, 'Linewidth', 2);
       else
         for idrug= conds2plot{ic}
           h(idrug) = shadedErrorBar([], squeeze(nanmean(data(:,:,idrug))), squeeze(nanstd(data(:,:,idrug))/sqrt(size(data(:,:,idrug),1))), condcol{idrug}, 0 );
