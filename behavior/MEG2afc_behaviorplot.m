@@ -128,7 +128,7 @@ close all
 nrow=4; ncol=4;
 f = figure; iplot=0;
 Fontsize = 6;
-f.Position =[   680   467   85*ncol   100*nrow];
+f.Position =[   680   467   120*ncol   100*nrow];
 for im = 1:length(behavnames)
   if isempty(behavnames{im})
     continue;
@@ -157,9 +157,12 @@ for im = 1:length(behavnames)
       subplot(nrow,ncol,iplot); hold on; % axis tight
       clear h
       if conds2plot{ic} == 4 
-        plotdat = squeeze(data(:,:,conds2plot{ic}))';
-        cmap = jet()
-        plot( plotdat, 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
+        plotdat = squeeze(data(:,:,conds2plot{ic}));
+        cmap = jet(size(plotdat,1));
+        cmap = cmap;
+        %         plot( plotdat', 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
+        colororder(cmap)
+        lh = plot( plotdat', 'Linewidth', 0.5);
         plot( nanmean(plotdat), 'Color', condcol{conds2plot{ic}}, 'Linewidth', 2);
       else
         for idrug= conds2plot{ic}
