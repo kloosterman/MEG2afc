@@ -25,10 +25,10 @@ latencies = [-0.1 0.15; -0.45 0.25]; % p = 0.059 1000 perms
 % latencies = [-0.1 0.15; -0.45 0.15]; 
 
 behavnames = {...
-  {'ddm_acc_perrun' 'v'};
+%   {'ddm_acc_perrun' 'v'};
   %   %     {'ddm_acc_perrun' 'a'};
   %   %     {'ddm_acc_perrun' 't'};
-%       {'dprime'};
+      {'dprime'};
   %     {'RT'};
   %     {'criterion'};
 %     {'p_repeatbalanced'};

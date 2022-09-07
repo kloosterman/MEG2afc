@@ -203,7 +203,7 @@ megdat.megleg = {'mod' 'latrstim' 'latrresp' 'latrprevresp' 'baseline'};
 testplot=1
 if testplot
   % multiplot for testing if all looks ok
-%   close all
+  close all
   idrug = 4; idiff = 3; imod = 1; itrig = 1; ifreq = 1;
   plotsinglesubj = 1;
   

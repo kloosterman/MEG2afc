@@ -88,8 +88,8 @@ switch tiletype
     %% stim, resp and low high together
     disp 'stats'
     stat = {};
-    for idrug = [4] % 2 plac, 4 atx-plac
-      for imod = [1 3] %1:4 % 2 is latr %  2=stim, 3=button, 4 = prevbutton
+    for idrug = 4 [2 4] % 2 plac, 4 atx-plac
+      for imod = [1] %1:4 % 2 is latr %  2=stim, 3=button, 4 = prevbutton
         % prepare data
         curfreq = {};
         for ifreq = 1:2

@@ -22,7 +22,7 @@ PREOUT = fullfile(basepath, 'behav');
 mkdir(PREOUT)
 
 saveddm_mat = 0; % save csv for hddm
-runontardis = 1; % run it or load behav per subject and session from file
+runontardis = 0; % run it or load behav per subject and session from file
 
 % subject issues:
 % NK1: high d' (pilot)  KEEP
@@ -140,6 +140,8 @@ end
 behavior = []; % struct with all behavior
 behavior.SUBJ = SUBJ;
 behavior.SUBJ_idx = SUBJ_idx;
+behavior.recordingdates = reshape([behav.recordingdates], 9, nsub,2,2); % dims: runs subj drug motor
+behavior.recordingdatesdimord = 'runs_subj_drug_motor';
 
 disp 'get bmeas dprime and criterion'; disp 'get RT'
 disp 'get p_repeat separately for L and R repeats'

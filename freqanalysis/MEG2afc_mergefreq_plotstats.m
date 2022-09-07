@@ -1,6 +1,6 @@
 %%  plot 3D integrated cluster
 
-SAV = 1;
+SAV = 0;
 close all
 load colormap_jetlightgray.mat
 subplotind = [2 1; 3 4];
@@ -9,14 +9,14 @@ clussign = {'pos', 'neg'};
 ifig = 1; % counter for saving
 % imod = 2; idrug = 4; idiff = 3;
 for idrug =4  %[2, 4]
-  for imod = [1 3]     
+  for imod = 1 %[1 3]     
     cfg=[];
     cfg.clus2plot = 1; 
     cfg.parameter = 'powspctrm';
     cfg.integratetype = 'trapz'; % mean or trapz
     cfg.colormap = cmap;
     cfg.subplotsize = [4 4];    
-    for isign = 1:2
+    for isign = 1%:2
       f = figure;   f.Position = [ 680          75         612        792 ]; % A4 formaat
       irow = 0;
       for ifreq = 2:-1:1 % 1:2 %
@@ -47,7 +47,6 @@ for idrug =4  %[2, 4]
         irow = irow+1;
       end
       
-      %       if plotsuccess
       if irow == 2 %|| ibehav == size(megdat.stat,1) % only 4 fit, starting from 0
         if SAV
           saveas(gcf, fullfile(megdat.PREOUT, sprintf('%sclus%d_%s_idrug%d_stat.pdf', cfg.clussign, cfg.clus2plot,  curstat.megtype, idrug )))
@@ -58,7 +57,6 @@ for idrug =4  %[2, 4]
       else
         irow = irow+1;
       end
-      %       end
     end
   end
 end

@@ -106,14 +106,14 @@ if SAV
   cd(b.PREOUT)
 end
 
-%% plot bpm and pupil over runs to see how it progresses
-% TODO add stats
+%% plot behavior chronologically 6 blocks x 2 sessions, drugs separately.
+
 SAV=1;
 makezscore = false;
 condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
 condcol = {'r' 'b' 'k' 'k'};
 behavnames = { {'propcorrect'}; {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
-behavnames = { {'dprime'}; {'RT'}; {'basepupil' } ;  {'bpm'}; };
+behavnames = { {'dprime'} ; {'RT'}; {'basepupil' } ;  {'bpm'}; };
 
 % behavnames = {
 %   {'basepupil' } ;  {'bpm'}; %{'ntrials'};
@@ -124,6 +124,105 @@ behavnames = { {'dprime'}; {'RT'}; {'basepupil' } ;  {'bpm'}; };
 %   {'dprime'}; {'criterion'};  {'RT'};  { 'p_repeatbalanced'} ;  
 %   }; % all matrices
 
+recdates = b.recordingdates(1:6,:,:,:);
+recdates = permute(recdates, [2 1 3 4]); % dims: subj runs drug motor
+
+close all
+nrow=4; ncol=4;
+f = figure; iplot=0;
+Fontsize = 6;
+f.Position =[   680   467   120*ncol   100*nrow];
+for im = 1:length(behavnames)
+  if isempty(behavnames{im})
+    continue;
+  end
+  curb = getfield(b, behavnames{im}{:});
+  
+  if length(size(curb)) == 5
+    data = squeeze(curb(:,1:6, 1:2, 1:2, 3));  % dims: subj runs drug motor
+  elseif length(size(curb)) == 4
+    data = squeeze(curb(:,1:6, 1:4, 1:2));  % dims: subj runs drug motor
+  end
+  
+  data_chrono = [];
+  for isub=1:19
+    for icond = 1:2
+      recsortdat = squeeze(recdates(isub,:,icond,:));
+      [~,I] = sort(recsortdat(:));
+%       if length(size(curb)) == 4
+%         sortdat = squeeze(data(isub,:,icond,:));
+%       else
+        sortdat = squeeze(data(isub,:,icond,:));
+%       end
+      sortdat = sortdat(:);
+      data_chrono(isub, 1:12, icond) = sortdat(I);
+    end
+  end
+  data_chrono(:,:,4) = data_chrono(:,:,1) - data_chrono(:,:,2);
+  
+  conds2plot = {1:2, 4};
+  for ic = 1:2
+    iplot=iplot+1;
+    subplot(nrow,ncol,iplot); hold on; % axis tight
+    if conds2plot{ic} == 4
+      plotdat = squeeze(data_chrono(:,:,conds2plot{ic}));
+      cmap = jet(size(plotdat,1));
+      cmap = cmap;
+      %         plot( plotdat', 'Color', [0.5 0.5 0.5], 'Linewidth', 0.5 );
+      colororder(cmap)
+      lh = plot( plotdat', 'Linewidth', 0.5);
+      plot( nanmean(plotdat), 'Color', condcol{conds2plot{ic}}, 'Linewidth', 2);
+    else
+      clear h
+      for idrug= conds2plot{ic}
+        h(idrug) = shadedErrorBar([], squeeze(nanmean(data_chrono(:,:,idrug))), ...
+          squeeze(nanstd(data_chrono(:,:,idrug))/sqrt(size(data_chrono(:,:,idrug),1))), condcol{idrug}, 1 );
+      end
+      % plot stats
+      [mask,p] = ttest(data_chrono(:,:,1), data_chrono(:,:,2));
+      plot_sig_bar(1:12, mask);
+    end
+    title(behavnames{im}, 'Fontsize', Fontsize-1)
+    xlabel('Block no.')
+    ax=gca;
+    ax.FontSize = Fontsize;
+%     ax.XTick = 1:6;
+    ax.XLim = [0.5 12.5];
+    line( [7 7], [ax.YLim], 'LineStyle', '--', 'Color', [0.5 0.5 0.5 ])
+    if im == 2 && all(conds2plot{ic} ~= 4)
+      legend([h.mainLine], condlabels{conds2plot{ic}}, 'Location', 'NorthEast'); legend boxoff
+    end
+  end
+  
+  % rmanova
+  t = table(data_chrono(:,1,1), data_chrono(:,2,1), data_chrono(:,3,1), data_chrono(:,4,1), data_chrono(:,5,1), data_chrono(:,6,1), ...
+    data_chrono(:,1,2), data_chrono(:,2,2), data_chrono(:,3,2), data_chrono(:,4,2), data_chrono(:,5,2), data_chrono(:,6,2), ...
+    'VariableNames', {'atx1', 'atx2', 'atx3', 'atx4', 'atx5', 'atx6', ...
+    'plac1', 'plac2', 'plac3', 'plac4', 'plac5', 'plac6'});
+  
+  withinDesign = table([1 1 1 1 1 1 2 2 2 2 2 2]',[1 2 3 4 5 6 1 2 3 4 5 6 ]','VariableNames',{'Drug' 'Time'});
+  withinDesign.Drug = categorical(withinDesign.Drug);
+  withinDesign.Time = categorical(withinDesign.Time);
+  
+  rmodel = fitrm(t,'atx1-plac6 ~ 1','WithinDesign',withinDesign);
+  disp(behavnames{im}{:})
+  [ranovatab] = ranova(rmodel,'WithinModel','Drug*Time')
+  
+  
+end
+if SAV
+  saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_overruns_chrono.pdf' )))
+  cd(b.PREOUT)
+end
+
+%% plot bpm and pupil over runs to see how it progresses
+
+SAV=1;
+makezscore = false;
+condlabels = {'ATX' 'plac' '' 'ATX-plac'}; % TODO put in b struct
+condcol = {'r' 'b' 'k' 'k'};
+% behavnames = { {'propcorrect'}; {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
+behavnames = { {'dprime'}; {'RT'}; {'basepupil' } ;  {'bpm'}; };
 
 close all
 nrow=4; ncol=4;

@@ -59,6 +59,10 @@ freq_subj = MEG2afc_mergefreq_runs()
 
 %% load and combine freqs of sessions
 % [megdat] = MEG2afc_mergefreq( 'BLC' ); % 'raw' or BLC, TODO get both, will fit
+[megdat] = MEG2afc_mergefreq(  ); % data on disk seems already normalized
+
+%% plot CTF C and O poolings, no stats
+% MEG2afc_mergefreq_plotpoolings
 
 %% corr pow with behavior
 % megdat = MEG2afc_mergefreq_corrstats(megdat);
