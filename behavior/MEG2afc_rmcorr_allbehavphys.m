@@ -4,6 +4,8 @@ function MEG2afc_rmcorr_allbehavphys(b)
 condlabels = {'ATX' 'plac' '' 'ATX-plac'}; %
 
 behavnames = {  {'dprime'}; {'criterion'};  {'RT'};  {'RTsd'}; { 'p_repeatbalanced'}; {'basepupil' } ;  {'bpm'}; };
+behavnames = {  {'dprime'};  {'RT'};  {'basepupil' } ;  {'bpm'}; };
+
 % behavnames = fliplr(behavnames)
 
 % get in matrix, columns
@@ -56,10 +58,12 @@ f.Position =[        1000         473         964         865];
 load colormap_jetlightgray.mat
 for idrug = [1,2,4]
   subplot(2,2,idrug)
-  im=imagesc(triu(corrmat(:,:,idrug), 0), [-0.3 0.3]);
+%   im=imagesc(triu(corrmat(:,:,idrug), 0), [-0.3 0.3]);
+  im=imagesc(corrmat(:,:,idrug), [-0.3 0.3]);
   alphadat = double(corrmatp(:,:,idrug) < 0.05);
   alphadat(alphadat==0) = 0.2;
   im.AlphaData = triu(alphadat);
+%   im.AlphaData = alphadat;
   %   imagesc(corrmat(:,:,idrug), [-0.3 0.3])
   colormap(cmap)
   %   colormap(jet(256))

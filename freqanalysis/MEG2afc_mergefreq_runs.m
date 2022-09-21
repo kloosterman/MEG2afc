@@ -96,6 +96,7 @@ for isub = 1:nsub
     freq_ses{is}.trialinfo(:,5) = squeeze(b.histshift_z(isub2, 1:nruns, 1, is) - b.histshift_z(isub2, 1:nruns, 2, is)); % dimord: 'subj_runs_drug_motor_difforprevresp'
     
     freq_ses{is}.trialinfo(:,6) = behavior.dprime(isub2, 1:nruns, 1, is, 3) - behavior.dprime(isub2, 1:nruns, 2, is, 3);
+    freq_ses{is}.trialinfo(:,7) = behavior.RT(isub2, 1:nruns, 1, is, 3) - behavior.RT(isub2, 1:nruns, 2, is, 3);
     
     if any(any(isnan(freq_ses{is}.trialinfo)))
       disp('nan found')
@@ -106,11 +107,11 @@ for isub = 1:nsub
   cfg.appenddim = 'rpt';
   freq_ses = ft_appendfreq(cfg,freq_ses{:});
   
-  % zscore per subject to put on equal footing
-  freq_ses.powspctrm = (freq_ses.powspctrm - mean(freq_ses.powspctrm)) ./ ...
-    std(freq_ses.powspctrm);
-  freq_ses.trialinfo = (freq_ses.trialinfo - mean(freq_ses.trialinfo)) ./ ...
-    std(freq_ses.trialinfo);
+%   % zscore per subject to put on equal footing
+%   freq_ses.powspctrm = (freq_ses.powspctrm - mean(freq_ses.powspctrm)) ./ ...
+%     std(freq_ses.powspctrm);
+%   freq_ses.trialinfo = (freq_ses.trialinfo - mean(freq_ses.trialinfo)) ./ ...
+%     std(freq_ses.trialinfo);
   
   %put in big mat
   freq_subj{end+1} = freq_ses;
@@ -156,7 +157,7 @@ cfg0_neighb.method    = 'template';
 cfg0_neighb.template  = 'ctf275_neighb.mat';
 neighbours       = ft_prepare_neighbours(cfg0_neighb);
 
-ibehav = 6;
+ibehav = 7;
 cfg = [];
 cfg.design           = freq_subj.trialinfo(:,ibehav);
 cfg.uvar     = [];
@@ -164,7 +165,7 @@ cfg.ivar     = 1;
 cfg.method           = 'montecarlo';
 %         cfg.statistic        = 'ft_statfun_correlationT';  %depsamplesT ft_statfun_correlationT_corrcol
 cfg.statistic        = 'ft_statfun_partialcorrelationT';  %depsamplesT ft_statfun_correlationT_corrcol
-cfg.type             = 'Pearson'; % Spearman Pearson
+cfg.type             = 'Spearman'; % Spearman Pearson
 cfg.correctm         = 'cluster';  %'no'
 cfg.clusteralpha     = 0.05;
 cfg.clusterstatistic = 'maxsum';
@@ -175,6 +176,10 @@ cfg.numrandomization = 100;
 cfg.neighbours       = neighbours;
 cfg.minnbchan        = 0;
 cfg.spmversion = 'spm12';
+
+cfg2=[];
+cfg2.frequency = [2 35];
+freq_subj = ft_selectdata(cfg2, freq_subj);
 
 tempstat = ft_freqstatistics(cfg, freq_subj);
 % disp 'get single subj values for scatter plot correlation'
@@ -218,24 +223,26 @@ ft_multiplotTFR(cfg, tempstat) % idrug, itrig, ifreq, idiff
 plotscatter = 1;
 if plotscatter
   bcorr = ft_findcfg(tempstat.cfg, 'design')';
-  posmask1 = tempstat.posclusterslabelmat == 1;
+  posmask1 = tempstat.posclusterslabelmat == 2;
   scatterdat = mean(freq_subj.powspctrm(:,posmask1(:)),2);
   acorr = scatterdat;
   f = figure; f.Position = [744   950   147   100];
   scatter(acorr, bcorr(:,1), 'filled', 'MarkerFaceColor', 'k' , 'MarkerEdgeColor', 'w', 'sizedata', 30);
-  box on; axis square;  axis tight
+  box on; axis square;  %axis tight
   %           set(gca, 'XLim', [-3.3840 3.3840])
   %           set(gca, 'YLim', [-0.36 0.36])
   title(sprintf('r = %1.2f, rho = %1.2f', partialcorr(acorr, bcorr(:,1), bcorr(:,2:end), 'type', 'Pearson'), partialcorr(acorr, bcorr(:,1), bcorr(:,2:end), 'type', 'Spearman' )))
-  lsline
-  %   saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_vs_%s_%s_scatter.pdf', ifig,  tempstat.megtype, tempstat.behavname{:} ))) %
+  %   lsline
+  xlabel('ATX-plac power modulation')
+  ylabel('ATX-plac dprime')
+  saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_scatter.pdf', ifig ))) %
 end
 
 %%
 disp('break up parts again')
 latencies = [-0.1 0.15; -0.45 0.25];
 for itrig=1:2
-  for ifreq = 1:2
+  for ifreq = 1%:2
     cfg=[];
     cfg.latency = latencies(itrig,:);
     if itrig==2
@@ -275,7 +282,7 @@ f = figure;   f.Position = [ 680          75         612        792 ]; % A4 form
 irow = 0;
 % imod = 2; idrug = 4; idiff = 3;
 for imod = 1 %1:4
-  for ibehav = 6 %1:size(megdat.corrstat,2)
+  for ibehav = 7 %1:size(megdat.corrstat,2)
     
     cfg=[];
     cfg.clus2plot = 1; 
@@ -284,8 +291,8 @@ for imod = 1 %1:4
     cfg.colormap = cmap;
     cfg.subplotsize = [4 4];
     
-    for isign = 1%:2
-      for ifreq = 2:-1:1 % 1:2 %
+    for isign = 2%:2
+      for ifreq = 1 %2:-1:1 % 1:2 %
         cfg.clussign = clussign{isign};
         
         % check if stim or resp locked is significant, if one, plot both

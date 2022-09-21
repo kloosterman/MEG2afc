@@ -68,13 +68,13 @@ cfg0_neighb.method    = 'template';
 cfg0_neighb.template  = 'ctf275_neighb.mat';
 neighbours       = ft_prepare_neighbours(cfg0_neighb);
 
-cfg = [];
+cfg = []; % doublecheck below! Overwritten
 cfg.uvar     = [];
 cfg.ivar     = 1;
 cfg.method           = 'montecarlo';
 %         cfg.statistic        = 'ft_statfun_correlationT';  %depsamplesT ft_statfun_correlationT_corrcol
 cfg.statistic        = 'ft_statfun_partialcorrelationT';  %depsamplesT ft_statfun_correlationT_corrcol
-cfg.type             = 'Pearson'; % Spearman Pearson
+cfg.type             = 'Spearman'; % Spearman Pearson
 cfg.correctm         = 'cluster';  %'no'
 cfg.clusteralpha     = 0.05;
 cfg.clusterstatistic = 'maxsum';
@@ -84,7 +84,7 @@ cfg.alpha            = 0.025;
 cfg.numrandomization = 100;
 cfg.neighbours       = neighbours;
 cfg.minnbchan        = 0;
-cfg.spmversion = 'spm12'
+cfg.spmversion = 'spm12';
 
 switch tiletype
   case 'separate'
@@ -166,7 +166,7 @@ switch tiletype
         
         % prepare data
         curfreq = {};
-        for ifreq = 1:2
+        for ifreq = 1%:2
           cfg = [];
           cfg.latency = latencies(1,:);
           freq_sr={};
@@ -192,7 +192,7 @@ switch tiletype
             cfg.method           = 'montecarlo';
     %         cfg.statistic        = 'ft_statfun_correlationT';  %depsamplesT ft_statfun_correlationT_corrcol
             cfg.statistic        = 'ft_statfun_partialcorrelationT';  %depsamplesT ft_statfun_correlationT_corrcol
-            cfg.type             = 'Pearson'; % Spearman Pearson
+            cfg.type             = 'Spearman'; % Spearman Pearson
             cfg.correctm         = 'cluster';  %'no'
             cfg.clusteralpha     = 0.05;
             cfg.clusterstatistic = 'maxsum';
@@ -222,7 +222,7 @@ switch tiletype
         
         disp('break up parts again')
         for itrig=1:2
-          for ifreq = 1:2
+          for ifreq = 1%:2
             cfg=[];
             cfg.latency = latencies(itrig,:);
             if itrig==2

@@ -21,8 +21,8 @@ for imod = 1 %1:4
     cfg.colormap = cmap;
     cfg.subplotsize = [4 4];
     
-    for isign = 1:2
-      for ifreq = 2:-1:1 % 1:2 %
+    for isign = 1%:2
+      for ifreq = 1 %2:-1:1 % 1:2 %
         cfg.clussign = clussign{isign};
         
         % check if stim or resp locked is significant, if one, plot both
@@ -51,17 +51,17 @@ for imod = 1 %1:4
       end
         
 %       if plotsuccess
-        if irow == 3 || ibehav == size(megdat.corrstat,1) % only 4 fit, starting from 0
+%         if irow == 3 || ibehav == size(megdat.corrstat,1) % only 4 fit, starting from 0
           if SAV
             %               saveas(gcf, fullfile(megdat.PREOUT, sprintf('corr_%svs%s.pdf',  megdat.corrstat{ibehav,1,1}.megtype,  [megdat.corrstat{ibehav,1,1}.behavname{:}] )))
-            saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_vs_%s_%s_corr.pdf', ifig,  curstat.megtype, curstat.behavname{:} )))
+            saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_%s_corr.pdf', ifig,  curstat.megtype, curstat.behavname{:} )))
           end
           f = figure;      f.Position = [ 680          75         612        792 ]; % A4 formaat
           ifig = ifig+1;
           irow = 0;
-        else
-          irow = irow+1;
-        end
+%         else
+%           irow = irow+1;
+%         end
         %       end
         plotscatter = 1;
         if plotscatter
@@ -74,7 +74,7 @@ for imod = 1 %1:4
 %           set(gca, 'YLim', [-0.36 0.36])
           title(sprintf('r = %1.2f, rho = %1.2f', partialcorr(acorr, bcorr(:,1), bcorr(:,2:end), 'type', 'Pearson'), partialcorr(acorr, bcorr(:,1), bcorr(:,2:end), 'type', 'Spearman' )))
           lsline
-          saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_%s_vs_%s_%s_scatter.pdf', ifig,  curstat.megtype, curstat.behavname{:} ))) %
+          saveas(gcf, fullfile(megdat.PREOUT, sprintf('clus%d_vs_%s_%s_scatter.pdf', ifig,  curstat.megtype, curstat.behavname{:} ))) %
         end
     end
   end

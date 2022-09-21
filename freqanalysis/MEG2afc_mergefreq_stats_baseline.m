@@ -90,18 +90,18 @@ switch tiletype
       tempstat = ft_freqstatistics(cfg, freq, freq0); % freqapp{:}
       
       disp('break up parts again')
-      for itrig=1:2
-        for ifreq = 1:2
+      for itrig=1%:2
+        for ifreq = 1%:2
           cfg=[];
           if ifreq==1
-            cfg.frequency = [2 35];
+            cfg.frequency = [2 100];% [2 35];
           else
             cfg.frequency = [36 100];
           end
           stat{imod, idrug,ifreq,itrig} = ft_selectdata(cfg, tempstat);
           
           % keep track of data etc
-          tempfreq = ft_selectdata(cfg, curfreq);
+          tempfreq = ft_selectdata(cfg, freq);
           stat{imod, idrug,ifreq,itrig}.powspctrm_subj = tempfreq.powspctrm;
           stat{imod, idrug,ifreq,itrig}.powspctrm = squeeze(mean(tempfreq.powspctrm));
           clear tempfreq
@@ -168,7 +168,7 @@ switch tiletype
     %         end
     %       end
     %     end
-    %     megdat.stat = stat;
+        megdat.stat = stat;
     
   case 'timefreq_together'
     %% stim, resp and low high together
